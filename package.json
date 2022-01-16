@@ -17,19 +17,32 @@
     "web-vitals": "^2.1.3"
   },
   "devDependencies": {
+    "@storybook/addon-actions": "^6.4.13",
+    "@storybook/addon-essentials": "^6.4.13",
+    "@storybook/addon-links": "^6.4.13",
+    "@storybook/builder-webpack5": "^6.4.13",
+    "@storybook/manager-webpack5": "^6.4.13",
+    "@storybook/node-logger": "^6.4.13",
+    "@storybook/preset-create-react-app": "^4.0.0",
+    "@storybook/react": "^6.4.13",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.4",
     "husky": "^7.0.4",
-    "prettier": "^2.5.1"
+    "mini-css-extract-plugin": "2.4.5",
+    "prettier": "^2.5.1",
+    "webpack": "^5.66.0"
   },
   "scripts": {
-    "build": "react-scripts build",
+    "build": "npm run :build:app && npm run :build:storybook",
     "check": "npm run :format && npm run :lint && npm run test",
-    "prepare": "husky install",
-    "start": "react-scripts start",
+    "start:app": "react-scripts start",
+    "start:storybook": "start-storybook -p 6006 -s public",
     "test": "react-scripts test --watchAll=false",
+    ":build:app": "react-scripts build",
+    ":build:storybook": "build-storybook -s public",
     ":format": "prettier --ignore-path .gitignore --write ./",
-    ":lint": "eslint --ext .ts,.tsx --fix ./"
+    ":lint": "eslint --ext .ts,.tsx --fix ./",
+    "prepare": "husky install"
   },
   "husky": {
     "hooks": {
@@ -60,7 +73,17 @@
           ]
         }
       ]
-    }
+    },
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
+    ]
   },
   "prettier": {
     "printWidth": 180,
