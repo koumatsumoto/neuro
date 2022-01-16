@@ -9,7 +9,7 @@ export const NoteContainer = () => {
   return (
     <>
       {notes.map((note) => (
-        <EditableNote data={note} />
+        <EditableNote key={note.id} data={note} />
       ))}
     </>
   );

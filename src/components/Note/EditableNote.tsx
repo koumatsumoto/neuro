@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Note, useAppService } from '../../common';
 import { NeuroEditor } from '../Editor';
 
@@ -12,11 +12,14 @@ export const createNote = () => {
 export const EditableNote = ({ data }: { data?: Note }) => {
   const appService = useAppService();
   const [note, setNote] = useState(data ?? createNote());
-  const onSave = (text: string) => {
-    const newNote = { ...note, text };
-    setNote(newNote);
-    appService.saveNote(newNote);
-  };
+  const save = useCallback(
+    (text: string) => {
+      const updated = { ...note, text };
+      setNote(updated);
+      appService.saveNote(updated);
+    },
+    [appService, note, setNote],
+  );
 
-  return <NeuroEditor text={note.text} onSave={onSave} />;
+  return <NeuroEditor text={note.text} onSave={save} onBlur={save} />;
 };
