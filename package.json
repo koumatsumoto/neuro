@@ -23,14 +23,13 @@
     "prettier": "^2.5.1"
   },
   "scripts": {
-    "start": "react-scripts start",
     "build": "react-scripts build",
+    "check": "npm run :format && npm run :lint",
+    "prepare": "husky install",
+    "start": "react-scripts start",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "check": "npm run format && npm run lint",
-    "format": "prettier --ignore-path .gitignore --write ./",
-    "lint": "eslint --ext .ts,.tsx --fix ./",
-    "prepare": "husky install"
+    ":format": "prettier --ignore-path .gitignore --write ./",
+    ":lint": "eslint --ext .ts,.tsx --fix ./"
   },
   "husky": {
     "hooks": {
