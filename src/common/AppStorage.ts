@@ -1,5 +1,4 @@
-import { isSameNoteTo } from './functions';
-import { Note } from './types';
+import { isEqualTo, Note } from './domain';
 
 /**
  * Database Schema
@@ -15,10 +14,10 @@ export class AppStorage<Data extends StorageData = StorageData> {
   }
 
   saveNote(note: Note) {
+    const isSame = isEqualTo(note);
     const notes = this.loadNotes();
-    const isSame = isSameNoteTo(note);
 
-    if (notes.find(isSame)) {
+    if (notes.some(isSame)) {
       this.#save(
         'app/notes',
         notes.map((n) => (isSame(n) ? { ...n, ...note } : n)),

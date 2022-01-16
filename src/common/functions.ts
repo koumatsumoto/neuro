@@ -1,14 +1,6 @@
-import { Note } from './types';
+import { type Eq } from 'fp-ts/Eq';
 
-export const eqNote = {
-  equals: (a: Note, b: Note) => a.id === b.id,
-};
-
-export const isSameNoteTo = (a: Note) => (b: Note) => a.id === b.id;
-
-export const createNote = () => {
-  return {
-    id: `note/${Date.now()}`,
-    text: '',
-  };
-};
+export const includes =
+  <A>(E: Eq<A>) =>
+  (a: A, array: Array<A>) =>
+    array.some((x) => E.equals(x, a));

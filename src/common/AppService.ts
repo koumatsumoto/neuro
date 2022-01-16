@@ -1,5 +1,5 @@
 import { AppStorage } from './AppStorage';
-import { Note } from './types';
+import { Note } from './domain';
 
 export class AppService {
   constructor(private readonly storage: AppStorage) {}
