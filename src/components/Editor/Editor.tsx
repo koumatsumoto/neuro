@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createEditor, Descendant } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
-import { ifNonEmpty } from '../../utils';
+import { ifNonEmpty, noop } from '../../utils';
 import { createKeyDownHandlers, deserialize, resetNodes, serialize } from './internal';
 
 const defaultEditorValue = [{ children: [{ text: '' }] }];
-const noop = (...args: unknown[]) => {};
 
 export const NeuroEditor = ({ text = '', onSave = noop, onBlur = noop }: { text?: string; onSave?: (text: string) => void; onBlur?: (text: string) => void }) => {
   const editor = useMemo(() => withReact(createEditor() as ReactEditor), []);

@@ -17,3 +17,5 @@ export const ifNonEmpty: IfNonEmpty = (value: any, fn: (value: any) => void) => 
     fn(value);
   }
 };
+
+export const noop = (...args: unknown[]) => {};
