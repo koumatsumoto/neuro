@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createEditor, Descendant } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
-import { ifNonNullable } from '../utils';
+import { ifNonNullable } from '../../utils';
 import { createKeyDownHandlers, deserialize, load, resetNodes, save, serialize } from './internal';
 
 const defaultEditorValue = [{ children: [{ text: 'A line of text in the Editor.' }] }];

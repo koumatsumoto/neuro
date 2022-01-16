@@ -1,7 +1,7 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import React from 'react';
 
-import { TestContainer } from '../testing';
+import { TestContainer } from '../../testing';
 import { NeuroEditor } from './Editor';
 
 export default {

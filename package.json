@@ -81,6 +81,7 @@
       "prettier"
     ],
     "rules": {
+      "import/export": 0,
       "import/order": [
         "error",
         {
