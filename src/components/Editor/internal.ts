@@ -1,6 +1,7 @@
 import React from 'react';
 import { Descendant, Editor, Location, Node, Point, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
+import { Note } from '../../common';
 
 const disableTabKey = (ev: React.KeyboardEvent) => {
   if (ev.key === 'Tab') {
@@ -23,19 +24,18 @@ const disableBrowserShortcuts = (ev: React.KeyboardEvent) => {
   }
 };
 
-const enableSaveCommand = (ev: React.KeyboardEvent) => {
+const enableSaveCommand = (ev: React.KeyboardEvent, callback: () => void) => {
   if (ev.ctrlKey || ev.metaKey) {
     if (ev.key === 's') {
-      console.log('save command');
+      callback();
     }
   }
 };
 
-export const createKeyDownHandlers = (editor: ReactEditor) => (ev: React.KeyboardEvent) => {
-  console.log(ev);
+export const createKeyDownHandlers = (editor: ReactEditor, commands: { onSaveCommand: () => void }) => (ev: React.KeyboardEvent) => {
   disableTabKey(ev);
   disableBrowserShortcuts(ev);
-  enableSaveCommand(ev);
+  enableSaveCommand(ev, commands.onSaveCommand);
 };
 
 export const serialize = (nodes: Descendant[]) => {
@@ -68,4 +68,12 @@ export const save = (text: string) => {
 
 export const load = () => {
   return localStorage.getItem('NeuroEditor/dev');
+};
+
+export const transformNoteToNodes = (note: Note): Node[] => {
+  return deserialize(note.text);
+};
+
+export const transformNodesToNote = (nodes: Descendant[]): Note => {
+  return { text: serialize(nodes) };
 };

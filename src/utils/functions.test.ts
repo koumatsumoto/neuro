@@ -1,4 +1,4 @@
-import { ifNonNullable } from './functions';
+import { ifNonEmpty, ifNonNullable } from './functions';
 
 describe('ifNonNullable', () => {
   test('with nullish', () => {
@@ -16,5 +16,14 @@ describe('ifNonNullable', () => {
     const fn = jest.fn();
     ifNonNullable(true, fn);
     expect(fn).toBeCalledWith(true);
+  });
+});
+
+describe('ifNonEmpty', () => {
+  test('with array', () => {
+    const fn = jest.fn();
+    ifNonEmpty([], fn);
+    ifNonEmpty([0], fn);
+    expect(fn).toBeCalledWith([0]);
   });
 });

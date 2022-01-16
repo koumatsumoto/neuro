@@ -5,3 +5,12 @@ export const ifNonNullable = <T>(value: T, fn: (value: NonNullable<T>) => void) 
     fn(value);
   }
 };
+
+interface IfNonEmpty {
+  <V>(value: Array<V>, fn: (value: [V, ...V[]]) => void): void;
+}
+export const ifNonEmpty: IfNonEmpty = (value: any, fn: (value: any) => void) => {
+  if (Array.isArray(value) && value.length > 0) {
+    fn(value);
+  }
+};
