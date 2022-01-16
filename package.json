@@ -35,21 +35,21 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.4",
     "husky": "^7.0.4",
+    "lint-staged": "^12.1.7",
     "mini-css-extract-plugin": "2.4.5",
     "prettier": "^2.5.1",
     "webpack": "^5.66.0"
   },
   "scripts": {
     "build": "npm run :build:app && npm run :build:storybook",
-    "check:format-and-lint": "npm run :format && npm run :lint",
-    "check:ci": "npm run check:format-and-lint && npm run build && npm run test",
+    "check:ci": "npm run check:format && npm run check:lint && npm run build && npm run test",
+    "check:format": "prettier --ignore-path .gitignore --write --check ./",
+    "check:lint": "eslint --fix --ext .ts,.tsx --cache ./src && eslint --ext .ts,.tsx --cache ./src",
     "start:app": "react-scripts start",
     "start:storybook": "start-storybook -p 6006 -s public",
     "test": "react-scripts test --watchAll=false",
     ":build:app": "react-scripts build",
     ":build:storybook": "build-storybook -s public",
-    ":format": "prettier --ignore-path .gitignore --write ./",
-    ":lint": "eslint --ext .ts,.tsx --fix ./",
     "prepare": "husky install"
   },
   "editorConfig": {
@@ -69,8 +69,16 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run check:format-and-lint"
+      "pre-commit": "npx lint-staged"
     }
+  },
+  "lint-staged": {
+    "*": [
+      "npm run check:format"
+    ],
+    "*.{ts,tsx}": [
+      "npm run check:lint"
+    ]
   },
   "eslintConfig": {
     "extends": [
@@ -81,7 +89,6 @@
       "prettier"
     ],
     "rules": {
-      "import/export": 0,
       "import/order": [
         "error",
         {
