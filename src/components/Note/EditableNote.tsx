@@ -7,9 +7,11 @@ export const EditableNote = ({ data }: { data?: Note }) => {
   const [note, setNote] = useState(data ?? createNote());
   const save = useCallback(
     (text: string) => {
-      const updated = { ...note, text };
-      setNote(updated);
-      appService.saveNote(updated);
+      if (text) {
+        const updated = { ...note, text };
+        setNote(updated);
+        appService.saveNote(updated);
+      }
     },
     [appService, note, setNote],
   );
