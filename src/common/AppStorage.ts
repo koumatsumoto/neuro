@@ -1,4 +1,5 @@
-import { isEqualTo, Note } from './domain';
+import { pipe } from 'fp-ts/function';
+import { isEqualTo, Note, orderByIdDesc } from './domain';
 
 /**
  * Database Schema
@@ -10,7 +11,7 @@ type StorageData = {
 
 export class AppStorage<Data extends StorageData = StorageData> {
   loadNotes(): Note[] {
-    return this.#load('app/notes') ?? [];
+    return pipe(this.#load('app/notes') ?? [], orderByIdDesc);
   }
 
   saveNote(note: Note) {
