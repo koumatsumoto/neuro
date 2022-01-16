@@ -24,9 +24,9 @@ export const NeuroEditor = ({ text = '', onSave = noop, onBlur = noop }: { text?
       createKeyDownHandlers(editor, {
         onSaveCommand: () => onSave(serialize(editor.children)),
       }),
-    [editor],
+    [onSave, editor],
   );
-  const blurCallback = useCallback(() => onBlur(serialize(editor.children)), [editor]);
+  const blurCallback = useCallback(() => onBlur(serialize(editor.children)), [onBlur, editor]);
 
   return (
     <Slate editor={editor} value={editorValue} onChange={onEditorChange}>

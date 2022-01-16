@@ -16,7 +16,7 @@ export const EditableNote = ({ data, onSave = noop }: { data?: Note; onSave?: (n
         onSave(updated);
       }
     },
-    [appService, note, setNote],
+    [appService, note, setNote, onSave],
   );
 
   return (
