@@ -1,23 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createEditor, Descendant } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
-import { useAppService } from '../../common';
-import { ifNonNullable } from '../../utils';
-import { createKeyDownHandlers, resetNodes, transformNodesToNote, transformNoteToNodes } from './internal';
+import { ifNonEmpty } from '../../utils';
+import { createKeyDownHandlers, deserialize, resetNodes, serialize } from './internal';
 
-const defaultEditorValue = [{ children: [{ text: 'A line of text in the Editor.' }] }];
+const defaultEditorValue = [{ children: [{ text: '' }] }];
+const noop = (...args: unknown[]) => {};
 
-export const NeuroEditor = () => {
-  const service = useAppService();
+export const NeuroEditor = ({ text = '', onSave = noop }: { text?: string; onSave?: (text: string) => void }) => {
   const editor = useMemo(() => withReact(createEditor() as ReactEditor), []);
   const [editorValue, setEditorValue] = useState<Descendant[]>(defaultEditorValue);
 
   // load previous text once initialized
   useEffect(() => {
-    ifNonNullable(service.loadLastNotes(), (note) => {
-      resetNodes(editor, { nodes: transformNoteToNodes(note) });
-    });
-  }, [editor]);
+    ifNonEmpty(text, (tx) => resetNodes(editor, { nodes: deserialize(tx) }));
+  }, [editor, text]);
 
   const onEditorChange = (newNodes: Descendant[]) => {
     setEditorValue(newNodes);
@@ -26,7 +23,7 @@ export const NeuroEditor = () => {
   const onKeyDown = useMemo(
     () =>
       createKeyDownHandlers(editor, {
-        onSaveCommand: () => service.saveNewNote(transformNodesToNote(editor.children)),
+        onSaveCommand: () => onSave(serialize(editor.children)),
       }),
     [editor],
   );

@@ -7,10 +7,13 @@ export const ifNonNullable = <T>(value: T, fn: (value: NonNullable<T>) => void) 
 };
 
 interface IfNonEmpty {
-  <V>(value: Array<V>, fn: (value: [V, ...V[]]) => void): void;
+  <V extends string>(value: V, fn: (value: V) => void): void;
+  <V, A extends Array<V>>(value: A, fn: (value: [V, ...V[]]) => void): void;
 }
 export const ifNonEmpty: IfNonEmpty = (value: any, fn: (value: any) => void) => {
   if (Array.isArray(value) && value.length > 0) {
+    fn(value);
+  } else if (typeof value === 'string' && value !== '') {
     fn(value);
   }
 };

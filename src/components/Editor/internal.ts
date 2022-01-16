@@ -1,7 +1,6 @@
 import React from 'react';
 import { Descendant, Editor, Location, Node, Point, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
-import { Note } from '../../common';
 
 const disableTabKey = (ev: React.KeyboardEvent) => {
   if (ev.key === 'Tab') {
@@ -60,20 +59,4 @@ export const resetNodes = (editor: ReactEditor, options: { nodes?: Node | Node[]
   if (point) {
     Transforms.select(editor, point);
   }
-};
-
-export const save = (text: string) => {
-  localStorage.setItem('NeuroEditor/dev', text);
-};
-
-export const load = () => {
-  return localStorage.getItem('NeuroEditor/dev');
-};
-
-export const transformNoteToNodes = (note: Note): Node[] => {
-  return deserialize(note.text);
-};
-
-export const transformNodesToNote = (nodes: Descendant[]): Note => {
-  return { text: serialize(nodes) };
 };

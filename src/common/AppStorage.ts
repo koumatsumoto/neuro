@@ -1,3 +1,4 @@
+import { isSameNoteTo } from './functions';
 import { Note } from './types';
 
 /**
@@ -14,7 +15,17 @@ export class AppStorage<Data extends StorageData = StorageData> {
   }
 
   saveNote(note: Note) {
-    this.#save('app/notes', [...this.loadNotes(), note]);
+    const notes = this.loadNotes();
+    const isSame = isSameNoteTo(note);
+
+    if (notes.find(isSame)) {
+      this.#save(
+        'app/notes',
+        notes.map((n) => (isSame(n) ? { ...n, ...note } : n)),
+      );
+    } else {
+      this.#save('app/notes', [...notes, note]);
+    }
   }
 
   #load<Key extends keyof Data & string>(key: Key): Data[Key] | null {

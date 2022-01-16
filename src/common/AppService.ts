@@ -16,8 +16,8 @@ export class AppService {
     return note;
   }
 
-  saveNewNote(note: Note) {
-    console.log('[app] saveNewNote', note);
+  saveNote(note: Note) {
+    console.log('[app] saveNote', note);
     this.storage.saveNote(note);
   }
 }
