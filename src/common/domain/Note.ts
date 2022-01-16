@@ -6,14 +6,15 @@ import * as S from 'fp-ts/string';
 export interface Note {
   readonly id: string;
   readonly text: string;
+  readonly createdAt: number;
 }
 
 const Ord = pipe(
   S.Ord,
-  contramap(({ id }: { id: string }) => id),
+  contramap(({ id }: Note) => id),
 );
 
-export const createNote = ({ id = `note/${Date.now()}`, text = '' }: { id?: string; text?: string } = {}) => ({ id, text });
+export const createNote = ({ id = `note/${Date.now()}`, text = '', createdAt = Date.now() }: Partial<Note> = {}) => ({ id, text, createdAt });
 export const isEqualTo = equals(Ord);
 export const orderById = sort(Ord);
 export const orderByIdDesc = sort(reverse(Ord));
