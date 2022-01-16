@@ -34,7 +34,8 @@
   },
   "scripts": {
     "build": "npm run :build:app && npm run :build:storybook",
-    "check": "npm run :format && npm run :lint && npm run test",
+    "check:format-and-lint": "npm run :format && npm run :lint",
+    "check:ci": "npm run check:format-and-lint && npm run build && npm run test",
     "start:app": "react-scripts start",
     "start:storybook": "start-storybook -p 6006 -s public",
     "test": "react-scripts test --watchAll=false",
@@ -61,7 +62,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run check"
+      "pre-commit": "npm run check:format-and-lint"
     }
   },
   "eslintConfig": {
