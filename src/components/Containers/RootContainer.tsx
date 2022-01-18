@@ -2,7 +2,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import React from 'react';
 import { RecoilRoot } from 'recoil';
 
-export const AppRootContainer: React.FC = ({ children }) => {
+export const RootContainer: React.FC = ({ children }) => {
   return (
     <React.StrictMode>
       <RecoilRoot>

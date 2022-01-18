@@ -1,2 +1,2 @@
-export * from './AppRootContainer';
-export * from './MainContainer';
+export * from './RootContainer';
+export * from './MainLayout';

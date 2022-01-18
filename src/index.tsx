@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './components/App';
-import { AppRootContainer } from './components/Containers';
+import { RootContainer } from './components/Containers';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  <AppRootContainer>
+  <RootContainer>
     <App />
-  </AppRootContainer>,
+  </RootContainer>,
   document.getElementById('root'),
 );
 

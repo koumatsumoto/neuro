@@ -1,13 +1,13 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { App } from './App';
-import { AppRootContainer } from './Containers';
+import { RootContainer } from './Containers';
 
 test('render should be completed without an error', () => {
   const view = render(
-    <AppRootContainer>
+    <RootContainer>
       <App />
-    </AppRootContainer>,
+    </RootContainer>,
   );
   expect(view.container).toBeTruthy();
 });
