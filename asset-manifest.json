@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.js": "/neuro/static/js/main.0f1436a7.js",
+    "main.js": "/neuro/static/js/main.c6d1b9fa.js",
     "static/js/787.e3d0fda1.chunk.js": "/neuro/static/js/787.e3d0fda1.chunk.js",
     "index.html": "/neuro/index.html",
-    "main.0f1436a7.js.map": "/neuro/static/js/main.0f1436a7.js.map",
+    "main.c6d1b9fa.js.map": "/neuro/static/js/main.c6d1b9fa.js.map",
     "787.e3d0fda1.chunk.js.map": "/neuro/static/js/787.e3d0fda1.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.0f1436a7.js"
+    "static/js/main.c6d1b9fa.js"
   ]
 }
