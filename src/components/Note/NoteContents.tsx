@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import React, { useEffect, useState } from 'react';
-import { createNote, Note, useAppService } from '../../common';
+import { createNote, Note, useAppService, useSetUiState } from '../../common';
 import { EditableNote } from './EditableNote';
 
 export const NoteListLayout: React.FC = ({ children }) => {
@@ -25,6 +25,7 @@ export const NoteListLayout: React.FC = ({ children }) => {
 
 export const NoteContents = () => {
   const service = useAppService();
+  const setUiState = useSetUiState();
   const [lastSavedNoteId, setLastSavedNoteId] = useState<string>(); // to control reloading notes from storage
   const [notes, setNotes] = useState([] as Note[]);
 
@@ -40,8 +41,10 @@ export const NoteContents = () => {
         setLastSavedNoteId(note.id); // reload notes
       }
     };
+    const handleBlur = (text: string) => (save(text), setUiState('default'));
+    const handleFocus = () => setUiState('editing-note');
 
-    return <EditableNote key={note.id} data={note} onBlur={save} />;
+    return <EditableNote key={note.id} data={note} onBlur={handleBlur} onFocus={handleFocus} />;
   });
 
   return <NoteListLayout>{Notes}</NoteListLayout>;

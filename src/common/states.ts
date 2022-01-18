@@ -1,4 +1,4 @@
-import { atom, useRecoilValue } from 'recoil';
+import { atom, useRecoilState, useRecoilValue } from 'recoil';
 import { AppService } from './AppService';
 import { AppStorage } from './AppStorage';
 
@@ -11,7 +11,16 @@ export const useAppService = () => {
   return useRecoilValue(appService);
 };
 
-export const isEditingNote = atom({
-  key: 'atom/isEditingNote',
-  default: false,
+type UiState = 'default' | 'editing-note';
+const uiState = atom<UiState>({
+  key: 'atom/uiState',
+  default: 'default',
 });
+
+export const useUiState = () => {
+  return useRecoilValue(uiState);
+};
+
+export const useSetUiState = () => {
+  return useRecoilState(uiState)[1];
+};

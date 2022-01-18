@@ -13,6 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import { alpha, styled } from '@mui/material/styles';
 import * as React from 'react';
+import { useUiState } from '../../common';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -46,6 +47,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export const AppToolbar = () => {
+  const uiState = useUiState();
+
   const [moreAnchorEl, setMoreAnchorEl] = React.useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(moreAnchorEl);
   const menuId = 'search-menu';
@@ -61,17 +64,23 @@ export const AppToolbar = () => {
     <Box>
       <AppBar position="static">
         <Toolbar>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
-          </Search>
-          <Box sx={{ marginLeft: '8px', marginRight: '-8px' }}>
-            <IconButton size="large" aria-label="show more" aria-controls={menuId} aria-haspopup="true" onClick={handleMenuOpen} color="inherit">
-              <MoreIcon />
-            </IconButton>
-          </Box>
+          {uiState === 'editing-note' ? (
+            <></>
+          ) : (
+            <>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
+              </Search>
+              <Box sx={{ marginLeft: '8px', marginRight: '-8px' }}>
+                <IconButton size="large" aria-label="show more" aria-controls={menuId} aria-haspopup="true" onClick={handleMenuOpen} color="inherit">
+                  <MoreIcon />
+                </IconButton>
+              </Box>
+            </>
+          )}
         </Toolbar>
       </AppBar>
       <Menu

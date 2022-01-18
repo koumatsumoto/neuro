@@ -8,7 +8,17 @@ import { deserialize, disableBrowserShortcuts, disableTabKey, serialize } from '
 
 const emptyEditorValue = [{ children: [{ text: '' }] }];
 
-export const EditableNote = ({ data, onBlur = noop, onChange = noop }: { data: Note; onBlur?: (text: string) => void; onChange?: (text: string) => void }) => {
+export const EditableNote = ({
+  data,
+  onFocus = noop,
+  onBlur = noop,
+  onChange = noop,
+}: {
+  data: Note;
+  onFocus?: () => void;
+  onBlur?: (text: string) => void;
+  onChange?: (text: string) => void;
+}) => {
   const editor = useMemo(() => withReact(createEditor() as ReactEditor), []);
   const [editorValue, setEditorValue] = useState<Descendant[]>(data.text ? deserialize(data.text) : emptyEditorValue);
 
@@ -29,7 +39,7 @@ export const EditableNote = ({ data, onBlur = noop, onChange = noop }: { data: N
   return (
     <Paper elevation={2} sx={{ width: '600px', maxWidth: '100%', padding: '24px' }}>
       <Slate editor={editor} value={editorValue} onChange={handleChange}>
-        <Editable onKeyDown={handleKeydown} onBlur={handleBlur} />
+        <Editable onKeyDown={handleKeydown} onBlur={handleBlur} onFocus={onFocus} />
       </Slate>
     </Paper>
   );
