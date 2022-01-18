@@ -2,13 +2,15 @@ import Box from '@mui/material/Box';
 import React from 'react';
 
 export const MainLayout = ({ toolbar, contents }: { toolbar: React.ReactNode; contents: React.ReactNode }) => {
+  const windowHeight = window.innerHeight + 'px';
+
   return (
     <Box
       sx={{
         maxWidth: '100vw',
         minWidth: '100vw',
-        maxHeight: '100vh',
-        minHeight: '100vh',
+        maxHeight: windowHeight,
+        minHeight: windowHeight,
         display: 'grid',
         grid: `
           "MainContents" 1fr
