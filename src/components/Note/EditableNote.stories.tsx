@@ -1,7 +1,6 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import React from 'react';
-
-import { TestContainer } from '../../testing';
+import { RootContainer } from '../Containers';
 import { EditableNote } from './EditableNote';
 
 export default {
@@ -10,9 +9,9 @@ export default {
 } as ComponentMeta<typeof EditableNote>;
 
 const Template: ComponentStory<typeof EditableNote> = () => (
-  <TestContainer>
+  <RootContainer>
     <EditableNote data={{ id: 'id', text: '', createdAt: Date.now() }} />
-  </TestContainer>
+  </RootContainer>
 );
 
 export const Primary = Template.bind({});
