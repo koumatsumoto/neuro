@@ -14,3 +14,22 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check:ci
+  deploy:
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/deploy'
+    needs: build
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: npm
+      - run: npm ci
+      - run: npm run build:gh-pages
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./build

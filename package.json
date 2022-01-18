@@ -43,6 +43,7 @@
   },
   "scripts": {
     "build": "npm run :build:app && npm run :build:storybook",
+    "build:gh-pages": "PUBLIC_URL=/neuro/ react-scripts build",
     "check:ci": "export CI=true; npm run check:format && npm run check:lint && npm run build && npm run test",
     "check:format": "prettier --ignore-path .gitignore --write --check ./",
     "check:lint": "eslint --fix --ext .ts,.tsx --cache ./src && eslint --ext .ts,.tsx --cache ./src",
