@@ -1,6 +1,26 @@
-import { useEffect, useState } from 'react';
+import Box from '@mui/material/Box';
+import React, { useEffect, useState } from 'react';
 import { createNote, Note, useAppService } from '../../common';
 import { EditableNote } from './EditableNote';
+
+export const NoteListLayout: React.FC = ({ children }) => {
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        flexFlow: 'column-reverse',
+        justifyContent: 'end',
+        padding: '24px',
+        gap: '24px',
+        overflow: 'auto',
+      }}
+    >
+      {children}
+    </Box>
+  );
+};
 
 export const NoteContents = () => {
   const service = useAppService();
@@ -12,10 +32,10 @@ export const NoteContents = () => {
   }, [setNotes, service, lastSavedNoteId]);
 
   return (
-    <>
+    <NoteListLayout>
       {notes.map((note) => (
         <EditableNote key={note.id} data={note} onSave={(note) => setLastSavedNoteId(note.id)} />
       ))}
-    </>
+    </NoteListLayout>
   );
 };
