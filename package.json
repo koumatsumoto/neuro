@@ -44,14 +44,15 @@
   "scripts": {
     "build": "npm run :build:app && npm run :build:storybook",
     "build:gh-pages": "PUBLIC_URL=/neuro/ react-scripts build",
-    "check:ci": "export CI=true; npm run check:format && npm run check:lint && npm run build && npm run test",
-    "check:format": "prettier --ignore-path .gitignore --write --check ./",
-    "check:lint": "eslint --fix --ext .ts,.tsx --cache ./src && eslint --ext .ts,.tsx --cache ./src",
+    "check:ci": "export CI=true; npm run lint && npm run build && npm run test",
+    "lint": "npm run :prettier && npm run :eslint",
     "start:app": "react-scripts start",
     "start:storybook": "start-storybook -p 6006 -s public",
     "test": "react-scripts test --watchAll=false",
     ":build:app": "react-scripts build",
     ":build:storybook": "build-storybook -s public",
+    ":eslint": "eslint --fix --ext .ts,.tsx --cache ./src && eslint --ext .ts,.tsx --cache ./src",
+    ":prettier": "prettier --ignore-path .gitignore --write --check ./",
     "prepare": "husky install"
   },
   "editorConfig": {
@@ -76,10 +77,10 @@
   },
   "lint-staged": {
     "*": [
-      "npm run check:format"
+      "prettier --write"
     ],
     "*.{ts,tsx}": [
-      "npm run check:lint"
+      "eslint --fix --cache"
     ]
   },
   "eslintConfig": {
