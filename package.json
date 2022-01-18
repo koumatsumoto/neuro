@@ -92,6 +92,7 @@
       "prettier"
     ],
     "rules": {
+      "no-sequences": 0,
       "import/order": [
         "error",
         {
