@@ -2,7 +2,8 @@ import Paper from '@mui/material/Paper';
 import React, { useCallback, useMemo, useState } from 'react';
 import { createEditor, Descendant } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
-import { Note } from '../../common';
+import { Note, useSetEditorController } from '../../common';
+import { EditorController } from '../../common/EditorController';
 import { noop } from '../../utils';
 import { deserialize, disableBrowserShortcuts, disableTabKey, serialize } from './internal';
 
@@ -21,6 +22,7 @@ export const EditableNote = ({
 }) => {
   const editor = useMemo(() => withReact(createEditor() as ReactEditor), []);
   const [editorValue, setEditorValue] = useState<Descendant[]>(data.text ? deserialize(data.text) : emptyEditorValue);
+  const setEditorController = useSetEditorController();
 
   const handleChange = (newNodes: Descendant[]) => {
     setEditorValue(newNodes);
@@ -33,8 +35,18 @@ export const EditableNote = ({
   }, []);
 
   const handleBlur = useCallback(() => {
-    onBlur(serialize(editor.children));
+    setTimeout(() => {
+      // for EditorToolbar buttons operations
+      if (!ReactEditor.isFocused(editor)) {
+        onBlur(serialize(editor.children));
+      }
+    }, 160);
   }, [editor, onBlur]);
+
+  const handleFocus = useCallback(() => {
+    setEditorController(new EditorController(editor));
+    onFocus();
+  }, [setEditorController, editor, onFocus]);
 
   return (
     <Paper
@@ -49,7 +61,7 @@ export const EditableNote = ({
       }}
     >
       <Slate editor={editor} value={editorValue} onChange={handleChange}>
-        <Editable onKeyDown={handleKeydown} onBlur={handleBlur} onFocus={onFocus} />
+        <Editable onKeyDown={handleKeydown} onBlur={handleBlur} onFocus={handleFocus} />
       </Slate>
     </Paper>
   );

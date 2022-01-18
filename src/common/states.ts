@@ -1,6 +1,7 @@
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
 import { AppService } from './AppService';
 import { AppStorage } from './AppStorage';
+import { EditorController } from './EditorController';
 
 const appService = atom({
   key: 'atom/AppService',
@@ -23,4 +24,17 @@ export const useUiState = () => {
 
 export const useSetUiState = () => {
   return useRecoilState(uiState)[1];
+};
+
+const editorController = atom<EditorController | null>({
+  key: 'atom/EditorController',
+  default: null,
+});
+
+export const useEditorController = () => {
+  return useRecoilValue(editorController);
+};
+
+export const useSetEditorController = () => {
+  return useRecoilState(editorController)[1];
 };
