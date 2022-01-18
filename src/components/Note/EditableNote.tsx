@@ -37,7 +37,17 @@ export const EditableNote = ({
   }, [editor, onBlur]);
 
   return (
-    <Paper elevation={2} sx={{ width: '600px', maxWidth: '100%', padding: '24px' }}>
+    <Paper
+      elevation={2}
+      sx={{
+        width: '600px',
+        maxWidth: '100%',
+        padding: '18px 16px 24px',
+        '& *': {
+          fontSize: '13px',
+        },
+      }}
+    >
       <Slate editor={editor} value={editorValue} onChange={handleChange}>
         <Editable onKeyDown={handleKeydown} onBlur={handleBlur} onFocus={onFocus} />
       </Slate>
