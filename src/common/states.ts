@@ -10,3 +10,8 @@ const appService = atom({
 export const useAppService = () => {
   return useRecoilValue(appService);
 };
+
+export const isEditingNote = atom({
+  key: 'atom/isEditingNote',
+  default: false,
+});

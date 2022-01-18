@@ -2,13 +2,13 @@ import React from 'react';
 import { Descendant, Editor, Location, Node, Point, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 
-const disableTabKey = (ev: React.KeyboardEvent) => {
+export const disableTabKey = (ev: React.KeyboardEvent) => {
   if (ev.key === 'Tab') {
     ev.preventDefault();
   }
 };
 
-const disableBrowserShortcuts = (ev: React.KeyboardEvent) => {
+export const disableBrowserShortcuts = (ev: React.KeyboardEvent) => {
   if (ev.ctrlKey || ev.metaKey) {
     switch (ev.key) {
       case 'd': // bookmark page
@@ -23,7 +23,7 @@ const disableBrowserShortcuts = (ev: React.KeyboardEvent) => {
   }
 };
 
-const enableSaveCommand = (ev: React.KeyboardEvent, callback: () => void) => {
+export const enableSaveCommand = (ev: React.KeyboardEvent, callback: () => void) => {
   if (ev.ctrlKey || ev.metaKey) {
     if (ev.key === 's') {
       callback();
@@ -31,10 +31,9 @@ const enableSaveCommand = (ev: React.KeyboardEvent, callback: () => void) => {
   }
 };
 
-export const createKeyDownHandlers = (editor: ReactEditor, commands: { onSaveCommand: () => void }) => (ev: React.KeyboardEvent) => {
+export const createKeyDownHandlers = (editor: ReactEditor) => (ev: React.KeyboardEvent) => {
   disableTabKey(ev);
   disableBrowserShortcuts(ev);
-  enableSaveCommand(ev, commands.onSaveCommand);
 };
 
 export const serialize = (nodes: Descendant[]) => {

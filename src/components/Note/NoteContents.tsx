@@ -27,16 +27,22 @@ export const NoteContents = () => {
   const service = useAppService();
   const [lastSavedNoteId, setLastSavedNoteId] = useState<string>(); // to control reloading notes from storage
   const [notes, setNotes] = useState([] as Note[]);
+
+  // reload notes on lastSavedNoteId changed
   useEffect(() => {
-    // first is always new one
     setNotes([createNote(), ...service.loadSavedNotes()]);
   }, [setNotes, service, lastSavedNoteId]);
 
-  return (
-    <NoteListLayout>
-      {notes.map((note) => (
-        <EditableNote key={note.id} data={note} onSave={(note) => setLastSavedNoteId(note.id)} />
-      ))}
-    </NoteListLayout>
-  );
+  const Notes = notes.map((note) => {
+    const save = (text: string) => {
+      if (text !== note.text) {
+        service.saveNote({ ...note, text });
+        setLastSavedNoteId(note.id); // reload notes
+      }
+    };
+
+    return <EditableNote key={note.id} data={note} onBlur={save} />;
+  });
+
+  return <NoteListLayout>{Notes}</NoteListLayout>;
 };

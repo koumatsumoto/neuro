@@ -2,16 +2,16 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import React from 'react';
 
 import { TestContainer } from '../../testing';
-import { NeuroEditor } from './Editor';
+import { EditableNote } from './EditableNote';
 
 export default {
   title: 'Editor',
-  component: NeuroEditor,
-} as ComponentMeta<typeof NeuroEditor>;
+  component: EditableNote,
+} as ComponentMeta<typeof EditableNote>;
 
-const Template: ComponentStory<typeof NeuroEditor> = () => (
+const Template: ComponentStory<typeof EditableNote> = () => (
   <TestContainer>
-    <NeuroEditor />
+    <EditableNote data={{ id: 'id', text: '', createdAt: Date.now() }} />
   </TestContainer>
 );
 
