@@ -1,11 +1,9 @@
 import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
 import React from 'react';
-import { RecoilRoot } from 'recoil';
 import { Header } from './Header';
 import { NoteContainer } from './Note';
 
-const AppContents = () => {
+export const App = () => {
   return (
     <>
       <Header />
@@ -13,14 +11,5 @@ const AppContents = () => {
         <NoteContainer />
       </Box>
     </>
-  );
-};
-
-export const App = () => {
-  return (
-    <RecoilRoot>
-      <CssBaseline />
-      <AppContents />
-    </RecoilRoot>
   );
 };
