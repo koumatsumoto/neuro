@@ -20,7 +20,7 @@ export const EditableNote = ({ data, onSave = noop }: { data?: Note; onSave?: (n
   );
 
   return (
-    <Paper elevation={3} sx={{ minWidth: '600px', padding: '24px' }}>
+    <Paper elevation={3} sx={{ width: '600px', maxWidth: '100%', padding: '24px' }}>
       <NeuroEditor text={note.text} onSave={save} onBlur={save} />
     </Paper>
   );

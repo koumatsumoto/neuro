@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { createNote, Note, useAppService } from '../../common';
 import { EditableNote } from './EditableNote';
 
-export const NoteContainer = () => {
+export const NoteContents = () => {
   const service = useAppService();
   const [lastSavedNoteId, setLastSavedNoteId] = useState<string>(); // to control reloading notes from storage
   const [notes, setNotes] = useState([] as Note[]);

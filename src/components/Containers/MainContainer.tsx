@@ -8,9 +8,11 @@ export const MainContainer: React.FC = ({ children }) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'start',
         padding: '24px',
         gap: '24px',
+        maxWidth: '100%',
+        overflow: 'auto',
       }}
     >
       {children}

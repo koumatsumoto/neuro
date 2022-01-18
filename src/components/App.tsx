@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import React from 'react';
 import { MainContainer } from './Containers';
 import { Header } from './Header';
-import { NoteContainer } from './Note';
+import { NoteContents } from './Note';
 
 export const App = () => {
   return (
@@ -18,7 +18,7 @@ export const App = () => {
     >
       <Header />
       <MainContainer>
-        <NoteContainer />
+        <NoteContents />
       </MainContainer>
     </Box>
   );
