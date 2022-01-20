@@ -14,6 +14,7 @@ const toText = (note: Note) => note.text;
 
 const Ord = pipe(S.Ord, contramap(toId));
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const Note = {
   create: ({ id = `note/${Date.now()}`, text = '', createdAt = Date.now() }: Partial<Note> = {}) => ({ id, text, createdAt }),
   isEqualTo: equals(Ord),
