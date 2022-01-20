@@ -23,7 +23,7 @@ export const NoteListLayout: React.FC = ({ children }) => {
   );
 };
 
-export const NoteContents = () => {
+export const NoteList = () => {
   const service = useAppService();
   const setUiState = useSetUiState();
   const [lastSavedNoteId, setLastSavedNoteId] = useState<string>(); // to control reloading notes from storage

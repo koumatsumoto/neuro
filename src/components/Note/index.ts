@@ -1,2 +1,2 @@
 export * from './EditableNote';
-export * from './NoteContents';
+export * from './NoteList';
