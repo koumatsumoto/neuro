@@ -103,9 +103,9 @@ export const EditableNote = ({
   const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
       case 'code':
-        return <CodeBlockElement {...props} />;
+        return CodeBlockElement(props);
       default:
-        return <SimpleTextElement {...props} />;
+        return SimpleTextElement(props);
     }
   }, []);
 
