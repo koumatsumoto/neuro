@@ -1,44 +1,9 @@
-import React from 'react';
 import { Descendant, Editor, Location, Node, Point, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { Note } from '../../../models';
 
 // for application service
 export type EditorOutputData = { text: string; editorNodes: Descendant[] };
-
-export const disableTabKey = (ev: React.KeyboardEvent) => {
-  if (ev.key === 'Tab') {
-    ev.preventDefault();
-  }
-};
-
-export const disableBrowserShortcuts = (ev: React.KeyboardEvent) => {
-  if (ev.ctrlKey || ev.metaKey) {
-    switch (ev.key) {
-      case 'd': // bookmark page
-      case 'q': // quit browser. TODO(bug): not working
-      case 'r': // reload page
-      case 's': // save page
-      case 'w': {
-        // close tab. TODO(bug): not working
-        ev.preventDefault();
-      }
-    }
-  }
-};
-
-export const enableSaveCommand = (ev: React.KeyboardEvent, callback: () => void) => {
-  if (ev.ctrlKey || ev.metaKey) {
-    if (ev.key === 's') {
-      callback();
-    }
-  }
-};
-
-export const createKeyDownHandlers = (editor: ReactEditor) => (ev: React.KeyboardEvent) => {
-  disableTabKey(ev);
-  disableBrowserShortcuts(ev);
-};
 
 const deserialize = (text: string) => {
   return text.split('\n').map((line) => ({ children: [{ text: line }] }));
@@ -76,4 +41,19 @@ export const getInitialEditorValue = (note: Note) => {
   } else {
     return [{ children: [{ type: 'simple-text', text: '' }] }];
   }
+};
+
+export const addHash = (editor: ReactEditor) => {
+  Transforms.insertText(editor, '#');
+  ReactEditor.focus(editor);
+};
+
+export const addAt = (editor: ReactEditor) => {
+  Transforms.insertText(editor, '@');
+  ReactEditor.focus(editor);
+};
+
+export const addSlash = (editor: ReactEditor) => {
+  Transforms.insertText(editor, '/');
+  ReactEditor.focus(editor);
 };

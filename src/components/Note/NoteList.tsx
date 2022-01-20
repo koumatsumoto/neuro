@@ -29,7 +29,7 @@ export const NoteListLayout: React.FC = ({ children }) => {
 
 export const NoteList = () => {
   const service = useAppService();
-  const notes = useSubscribe(service.notesWithNewOne, { onSubscribe: () => service.loadNotes, initialValue: [] });
+  const notes = useSubscribe(service.notesWithNewOne, { onSubscribe: () => service.loadNotes(), initialValue: [] });
 
   const makeNote = (note: Note) => {
     const validate = getNoteValidation(note);

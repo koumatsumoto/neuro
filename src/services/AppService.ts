@@ -1,14 +1,17 @@
 import { pipe } from 'fp-ts/function';
 import { BehaviorSubject } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, withLatestFrom } from 'rxjs/operators';
 import { ReactEditor } from 'slate-react';
 import { Note } from '../models';
 import { AppStorage } from './AppStorage';
 
+type EditorCommand = 'AddHash' | 'AddAt' | 'AddSlash' | '';
+
 // TODO(refactor): consider renaming to NoteService
 export class AppService {
-  readonly #notes = new BehaviorSubject([] as Note[]);
-  readonly #activeEditor = new BehaviorSubject(null as null | ReactEditor);
+  readonly #notes = new BehaviorSubject<Note[]>([]);
+  readonly #activeEditor = new BehaviorSubject<ReactEditor | null>(null);
+  readonly #editorCommand = new BehaviorSubject<EditorCommand>('');
 
   get notesWithNewOne() {
     return this.#notes.pipe(
@@ -44,5 +47,25 @@ export class AppService {
 
   resetActiveEditor() {
     this.#activeEditor.next(null);
+  }
+
+  getCommandsOf(editor: ReactEditor) {
+    return this.#editorCommand.pipe(
+      withLatestFrom(this.#activeEditor),
+      filter(([, e]) => editor === e),
+      map(([command]) => command),
+    );
+  }
+
+  addHash() {
+    this.#editorCommand.next('AddHash');
+  }
+
+  addAt() {
+    this.#editorCommand.next('AddAt');
+  }
+
+  addSlash() {
+    this.#editorCommand.next('AddSlash');
   }
 }

@@ -3,10 +3,20 @@ import React, { useCallback, useRef, useState } from 'react';
 import { createEditor, Descendant, Editor, Transforms } from 'slate';
 import { Editable, ReactEditor, RenderElementProps, Slate, withReact } from 'slate-react';
 import { Note } from '../../models';
-import { useSetEditorController } from '../../services';
-import { EditorController } from '../../services/EditorController';
-import { noop } from '../../utils';
-import { CodeBlockElement, disableBrowserShortcuts, disableTabKey, EditorOutputData, getInitialEditorValue, makeEditorOutputData, SimpleTextElement } from './internal';
+import { useAppService } from '../../services';
+import { noop, useSubscribe } from '../../utils';
+import {
+  addAt,
+  addHash,
+  addSlash,
+  CodeBlockElement,
+  disableBrowserShortcuts,
+  disableTabKey,
+  EditorOutputData,
+  getInitialEditorValue,
+  makeEditorOutputData,
+  SimpleTextElement,
+} from './internal';
 
 export const EditableNote = ({
   data,
@@ -21,7 +31,22 @@ export const EditableNote = ({
 }) => {
   const editor = useRef(withReact(createEditor() as ReactEditor)).current;
   const [editorValue, setEditorValue] = useState<Descendant[]>(getInitialEditorValue(data));
-  const setEditorController = useSetEditorController();
+
+  const service = useAppService();
+  useSubscribe(service.getCommandsOf(editor), {
+    onNext: (command) => {
+      switch (command) {
+        case 'AddHash':
+          return addHash(editor);
+        case 'AddAt':
+          return addAt(editor);
+        case 'AddSlash':
+          return addSlash(editor);
+        default:
+          return;
+      }
+    },
+  });
 
   const handleChange = (value: Descendant[]) => {
     setEditorValue(value);
@@ -57,9 +82,8 @@ export const EditableNote = ({
   }, [editor, onBlur]);
 
   const handleFocus = useCallback(() => {
-    setEditorController(new EditorController(editor));
     onFocus(editor);
-  }, [setEditorController, editor, onFocus]);
+  }, [editor, onFocus]);
 
   const renderElement = useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
