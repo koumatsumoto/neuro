@@ -19,3 +19,11 @@ export const ifNonEmpty: IfNonEmpty = (value: any, fn: (value: any) => void) => 
 };
 
 export const noop = (...args: unknown[]) => {};
+
+export const debug = (label: string, fn: (...args: unknown[]) => unknown) => {
+  try {
+    console.log(`[debug] ${label}`, fn());
+  } catch (e) {
+    console.error(`[debug] ${label}`, e);
+  }
+};

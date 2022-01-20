@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import React, { useEffect, useState } from 'react';
 import { Note, useAppService, useSetUiState } from '../../common';
 import { EditableNote } from './EditableNote';
-import { getNoteValidation } from './internal/validation';
+import { EditorOutputData, getNoteValidation } from './internal';
 
 export const NoteListLayout: React.FC = ({ children }) => {
   return (
@@ -37,8 +37,8 @@ export const NoteList = () => {
 
   const Notes = notes.map((note) => {
     const validate = getNoteValidation(note);
-    const save = (text: string) => {
-      const newNote = { ...note, text };
+    const save = (data: EditorOutputData) => {
+      const newNote = Note.create({ ...note, text: data.text, editorNodes: JSON.stringify(data.editorNodes) });
       const errors = validate(newNote);
       if (errors === null) {
         service.saveNote(newNote);
@@ -46,7 +46,7 @@ export const NoteList = () => {
       }
     };
 
-    const handleBlur = (text: string) => (save(text), setUiState('default'));
+    const handleBlur = (data: EditorOutputData) => (save(data), setUiState('default'));
     const handleFocus = () => setUiState('editing-note');
 
     return <EditableNote key={note.id} data={note} onBlur={handleBlur} onFocus={handleFocus} />;

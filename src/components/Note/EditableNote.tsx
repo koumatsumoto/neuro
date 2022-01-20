@@ -1,13 +1,11 @@
 import Paper from '@mui/material/Paper';
 import React, { useCallback, useRef, useState } from 'react';
-import { createEditor, Descendant } from 'slate';
-import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
+import { createEditor, Descendant, Editor, Transforms } from 'slate';
+import { Editable, ReactEditor, RenderElementProps, Slate, withReact } from 'slate-react';
 import { Note, useSetEditorController } from '../../common';
 import { EditorController } from '../../common/EditorController';
 import { noop } from '../../utils';
-import { deserialize, disableBrowserShortcuts, disableTabKey, serialize } from './internal';
-
-const emptyEditorValue = [{ children: [{ text: '' }] }];
+import { CodeBlockElement, disableBrowserShortcuts, disableTabKey, EditorOutputData, getInitialEditorValue, makeEditorOutputData, SimpleTextElement } from './internal';
 
 export const EditableNote = ({
   data,
@@ -17,28 +15,42 @@ export const EditableNote = ({
 }: {
   data: Note;
   onFocus?: () => void;
-  onBlur?: (text: string) => void;
-  onChange?: (text: string) => void;
+  onBlur?: (data: EditorOutputData) => void;
+  onChange?: (data: EditorOutputData) => void;
 }) => {
   const editor = useRef(withReact(createEditor() as ReactEditor)).current;
-  const [editorValue, setEditorValue] = useState<Descendant[]>(data.text ? deserialize(data.text) : emptyEditorValue);
+  const [editorValue, setEditorValue] = useState<Descendant[]>(getInitialEditorValue(data));
   const setEditorController = useSetEditorController();
 
-  const handleChange = (newNodes: Descendant[]) => {
-    setEditorValue(newNodes);
-    onChange(serialize(newNodes));
+  const handleChange = (value: Descendant[]) => {
+    setEditorValue(value);
+    onChange(makeEditorOutputData(value));
   };
 
-  const handleKeydown = useCallback((ev: React.KeyboardEvent) => {
-    disableTabKey(ev);
-    disableBrowserShortcuts(ev);
-  }, []);
+  const handleKeydown = useCallback(
+    (ev: React.KeyboardEvent) => {
+      disableTabKey(ev);
+      disableBrowserShortcuts(ev);
+
+      if (ev.key === '`' && ev.ctrlKey) {
+        ev.preventDefault();
+
+        // Determine whether any of the currently selected blocks are code blocks.
+        const [match] = Editor.nodes(editor, {
+          match: (n) => n.type === 'code',
+        });
+        // Toggle the block type depending on whether there's already a match.
+        Transforms.setNodes(editor, { type: match ? 'simple-text' : 'code' }, { match: (n) => Editor.isBlock(editor, n) });
+      }
+    },
+    [editor],
+  );
 
   const handleBlur = useCallback(() => {
     setTimeout(() => {
       // for EditorToolbar buttons operations
       if (!ReactEditor.isFocused(editor)) {
-        onBlur(serialize(editor.children));
+        onBlur(makeEditorOutputData(editor.children));
       }
     }, 160);
   }, [editor, onBlur]);
@@ -47,6 +59,15 @@ export const EditableNote = ({
     setEditorController(new EditorController(editor));
     onFocus();
   }, [setEditorController, editor, onFocus]);
+
+  const renderElement = useCallback((props: RenderElementProps) => {
+    switch (props.element.type) {
+      case 'code':
+        return <CodeBlockElement {...props} />;
+      default:
+        return <SimpleTextElement {...props} />;
+    }
+  }, []);
 
   return (
     <Paper
@@ -61,7 +82,7 @@ export const EditableNote = ({
       }}
     >
       <Slate editor={editor} value={editorValue} onChange={handleChange}>
-        <Editable onKeyDown={handleKeydown} onBlur={handleBlur} onFocus={handleFocus} />
+        <Editable renderElement={renderElement} onKeyDown={handleKeydown} onBlur={handleBlur} onFocus={handleFocus} />
       </Slate>
     </Paper>
   );

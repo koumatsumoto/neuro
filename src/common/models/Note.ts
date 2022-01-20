@@ -7,6 +7,7 @@ export interface Note {
   readonly id: string;
   readonly text: string;
   readonly createdAt: number;
+  readonly editorNodes?: string; // json of Editor.Descendant[]
 }
 
 const toId = (note: Note) => note.id;

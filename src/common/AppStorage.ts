@@ -15,16 +15,16 @@ export class AppStorage<Data extends StorageData = StorageData> {
   }
 
   saveNote(note: Note) {
-    const isSame = Note.isEqualTo(note);
-    const notes = this.loadNotes();
+    const isEqualToNewOne = Note.isEqualTo(note);
+    const notesInStorage = this.loadNotes();
 
-    if (notes.some(isSame)) {
+    if (notesInStorage.some(isEqualToNewOne)) {
       this.#save(
         'app/notes',
-        notes.map((n) => (isSame(n) ? { ...n, ...note } : n)),
+        notesInStorage.map((n) => (isEqualToNewOne(n) ? { ...n, ...note } : n)),
       );
     } else {
-      this.#save('app/notes', [...notes, note]);
+      this.#save('app/notes', [...notesInStorage, note]);
     }
   }
 
