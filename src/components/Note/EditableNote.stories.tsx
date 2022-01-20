@@ -1,6 +1,6 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import React from 'react';
-import { RootContainer } from '../Containers';
+import { RootContainer } from '../common';
 import { EditableNote } from './EditableNote';
 
 export default {

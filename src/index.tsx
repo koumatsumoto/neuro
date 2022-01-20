@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './components/App';
-import { RootContainer } from './components/Containers';
+import { RootContainer } from './components/common';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(

@@ -1,6 +1,6 @@
 import React from 'react';
-import { MainLayout } from './Containers';
 import { Header } from './Header';
+import { MainLayout } from './Layout';
 import { NoteList } from './Note';
 import { AppToolbar } from './Toolbar';
 
