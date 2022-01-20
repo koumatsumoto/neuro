@@ -2,8 +2,9 @@ import Paper from '@mui/material/Paper';
 import React, { useCallback, useRef, useState } from 'react';
 import { createEditor, Descendant, Editor, Transforms } from 'slate';
 import { Editable, ReactEditor, RenderElementProps, Slate, withReact } from 'slate-react';
-import { Note, useSetEditorController } from '../../common';
+import { useSetEditorController } from '../../common';
 import { EditorController } from '../../common/EditorController';
+import { Note } from '../../models';
 import { noop } from '../../utils';
 import { CodeBlockElement, disableBrowserShortcuts, disableTabKey, EditorOutputData, getInitialEditorValue, makeEditorOutputData, SimpleTextElement } from './internal';
 

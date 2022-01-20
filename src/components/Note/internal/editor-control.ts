@@ -1,7 +1,7 @@
 import React from 'react';
 import { Descendant, Editor, Location, Node, Point, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
-import { Note } from '../../../common';
+import { Note } from '../../../models';
 
 // for application service
 export type EditorOutputData = { text: string; editorNodes: Descendant[] };

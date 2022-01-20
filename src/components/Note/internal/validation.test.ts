@@ -1,4 +1,4 @@
-import { Note } from '../../../common';
+import { Note } from '../../../models';
 import { getNoteValidation } from './validation';
 
 test('getNoteValidation', () => {

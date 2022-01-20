@@ -1,5 +1,5 @@
 import { pipe } from 'fp-ts/function';
-import { Note } from './models';
+import { Note } from '../models';
 
 /**
  * Database Schema

@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import React, { useEffect, useState } from 'react';
-import { Note, useAppService, useSetUiState } from '../../common';
+import { useAppService, useSetUiState } from '../../common';
+import { Note } from '../../models';
 import { EditableNote } from './EditableNote';
 import { EditorOutputData, getNoteValidation } from './internal';
 

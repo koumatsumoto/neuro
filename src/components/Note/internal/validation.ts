@@ -1,7 +1,7 @@
 import { contramap, not } from 'fp-ts/Predicate';
 import { pipe } from 'fp-ts/function';
 import { isEmpty } from 'fp-ts/string';
-import { Note } from '../../../common';
+import { Note } from '../../../models';
 import { getValidation } from './validation-fp';
 
 const isChangedFrom =

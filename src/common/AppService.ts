@@ -1,5 +1,5 @@
+import { Note } from '../models';
 import { AppStorage } from './AppStorage';
-import { Note } from './models';
 
 export class AppService {
   constructor(private readonly storage: AppStorage) {}
