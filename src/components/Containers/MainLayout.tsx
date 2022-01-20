@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import React from 'react';
 
-export const MainLayout = ({ toolbar, contents }: { toolbar: React.ReactNode; contents: React.ReactNode }) => {
+export const MainLayout = ({ header, toolbar, contents }: { header: React.ReactNode; toolbar: React.ReactNode; contents: React.ReactNode }) => {
   const screenHeight = window.innerHeight + 'px';
   const toolbarHeight = '56px';
 
@@ -15,6 +15,7 @@ export const MainLayout = ({ toolbar, contents }: { toolbar: React.ReactNode; co
         paddingBottom: toolbarHeight,
         display: 'grid',
         grid: `
+          "Header" auto
           "MainContents" 1fr
           / auto
         `,
@@ -22,9 +23,17 @@ export const MainLayout = ({ toolbar, contents }: { toolbar: React.ReactNode; co
     >
       <Box
         sx={{
+          gridArea: 'Header',
+        }}
+      >
+        {header}
+      </Box>
+
+      <Box
+        sx={{
           gridArea: 'MainContents',
           display: 'grid',
-          grid: 'auto / auto',
+          grid: '1fr',
           overflow: 'auto',
         }}
       >
