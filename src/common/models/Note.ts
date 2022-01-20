@@ -10,6 +10,12 @@ export interface Note {
   readonly editorNodes?: string; // json of Editor.Descendant[]
 }
 
+const create = (data: Partial<Note> = {}) => ({
+  id: data.id ?? `note/${Date.now()}`,
+  text: data.text ?? '',
+  createdAt: data.createdAt ?? Date.now(),
+  editorNodes: data.editorNodes ?? undefined,
+});
 const toId = (note: Note) => note.id;
 const toText = (note: Note) => note.text;
 
@@ -17,7 +23,7 @@ const Ord = pipe(S.Ord, contramap(toId));
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const Note = {
-  create: ({ id = `note/${Date.now()}`, text = '', createdAt = Date.now() }: Partial<Note> = {}) => ({ id, text, createdAt }),
+  create,
   isEqualTo: equals(Ord),
   orderByIdAsc: sort(Ord),
   orderByIdDesc: sort(reverse(Ord)),
