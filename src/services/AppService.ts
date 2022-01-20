@@ -1,4 +1,3 @@
-import { pipe } from 'fp-ts/function';
 import { BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, filter, map, withLatestFrom } from 'rxjs/operators';
 import { ReactEditor } from 'slate-react';
@@ -32,13 +31,13 @@ export class AppService {
   constructor(private readonly storage: AppStorage) {}
 
   loadNotes() {
-    const notes = pipe(this.storage.loadNotes(), Note.orderByIdDesc);
+    const notes = this.storage.loadNotes();
     this.#notes.next(notes);
   }
 
   saveNote(note: Note) {
-    this.storage.saveNote(note);
-    this.#notes.next([...this.#notes.getValue(), note]);
+    const notes = this.storage.saveNote(note);
+    this.#notes.next(notes);
   }
 
   setActiveEditor(editor: ReactEditor) {

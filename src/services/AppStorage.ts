@@ -19,18 +19,14 @@ export class AppStorage<Data extends StorageData = StorageData> {
     return this.#load('app/notes') ?? [];
   }
 
-  saveNote(note: Note) {
+  saveNote(note: Note): Note[] {
     const isEqualToNewOne = Note.isEqualTo(note);
     const notesInStorage = this.loadNotes();
+    const isUpdateExistence = notesInStorage.some(isEqualToNewOne);
+    const newNotes = isUpdateExistence ? notesInStorage.map((n) => (isEqualToNewOne(n) ? { ...n, ...note } : n)) : [...notesInStorage, note];
+    this.#save('app/notes', newNotes);
 
-    if (notesInStorage.some(isEqualToNewOne)) {
-      this.#save(
-        'app/notes',
-        notesInStorage.map((n) => (isEqualToNewOne(n) ? { ...n, ...note } : n)),
-      );
-    } else {
-      this.#save('app/notes', [...notesInStorage, note]);
-    }
+    return newNotes;
   }
 
   #load<Key extends keyof Data & string>(key: Key): Data[Key] | null {
