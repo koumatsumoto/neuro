@@ -1,20 +1,23 @@
 import Paper from '@mui/material/Paper';
 import React, { useCallback, useRef, useState } from 'react';
-import { createEditor, Descendant, Editor, Transforms } from 'slate';
-import { Editable, ReactEditor, RenderElementProps, Slate, withReact } from 'slate-react';
+import { createEditor, Descendant, Editor, Text, Transforms } from 'slate';
+import { Editable, ReactEditor, RenderElementProps, RenderLeafProps, Slate, withReact } from 'slate-react';
 import { Note } from '../../models';
 import { useAppService } from '../../services';
-import { noop, useSubscribe } from '../../utils';
+import { debug, noop, useSubscribe } from '../../utils';
 import {
   addAt,
   addHash,
   addSlash,
   CodeBlockElement,
-  disableBrowserShortcuts,
+  debugNodes,
+  disableControlKeyShortcuts,
   disableTabKey,
   EditorOutputData,
   getInitialEditorValue,
+  Leaf,
   makeEditorOutputData,
+  onCtrlAnd,
   SimpleTextElement,
 } from './internal';
 
@@ -48,29 +51,41 @@ export const EditableNote = ({
     },
   });
 
-  const handleChange = (value: Descendant[]) => {
-    setEditorValue(value);
-    onChange(makeEditorOutputData(value));
-  };
+  const handleChange = useCallback(
+    (value: Descendant[]) => {
+      setEditorValue(value);
+      onChange(makeEditorOutputData(value));
+    },
+    [setEditorValue, onChange],
+  );
+
+  debugNodes(editor);
 
   const handleKeydown = useCallback(
     (ev: React.KeyboardEvent) => {
       disableTabKey(ev);
-      disableBrowserShortcuts(ev);
-
-      if (ev.key === '`' && ev.ctrlKey) {
-        ev.preventDefault();
-
+      disableControlKeyShortcuts(ev);
+      onCtrlAnd('`', () => {
         // Determine whether any of the currently selected blocks are code blocks.
-        const [match] = Editor.nodes(editor, {
-          match: (n) => n.type === 'code',
-        });
+        const [match] = Editor.nodes(editor, { match: (n) => n.type === 'code' });
         // Toggle the block type depending on whether there's already a match.
         Transforms.setNodes(editor, { type: match ? 'simple-text' : 'code' }, { match: (n) => Editor.isBlock(editor, n) });
-      }
+      })(ev);
+      onCtrlAnd('b', () => {
+        const [match] = Editor.nodes(editor, { match: (n) => Text.isText(n) && n.bold === true });
+        Transforms.setNodes(
+          editor,
+          { bold: !match },
+          // Apply it to text nodes, and split the text node up if the
+          // selection is overlapping only part of it.
+          { match: (n) => Text.isText(n), split: true },
+        );
+      })(ev);
     },
     [editor],
   );
+
+  const handleKeyup = useCallback((ev: React.KeyboardEvent) => {}, []);
 
   const handleBlur = useCallback(() => {
     setTimeout(() => {
@@ -94,6 +109,12 @@ export const EditableNote = ({
     }
   }, []);
 
+  const renderLeaf = useCallback((props: RenderLeafProps) => {
+    debug('lenderLeaf', () => props);
+
+    return Leaf(props);
+  }, []);
+
   return (
     <Paper
       elevation={1}
@@ -107,7 +128,7 @@ export const EditableNote = ({
       }}
     >
       <Slate editor={editor} value={editorValue} onChange={handleChange}>
-        <Editable renderElement={renderElement} onKeyDown={handleKeydown} onBlur={handleBlur} onFocus={handleFocus} />
+        <Editable renderElement={renderElement} renderLeaf={renderLeaf} onKeyDown={handleKeydown} onKeyUp={handleKeyup} onBlur={handleBlur} onFocus={handleFocus} />
       </Slate>
     </Paper>
   );
