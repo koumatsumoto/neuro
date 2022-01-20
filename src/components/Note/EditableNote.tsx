@@ -50,7 +50,7 @@ export const EditableNote = ({
 
   return (
     <Paper
-      elevation={2}
+      elevation={1}
       sx={{
         width: '600px',
         maxWidth: '100%',
