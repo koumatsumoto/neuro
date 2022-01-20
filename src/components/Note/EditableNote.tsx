@@ -1,5 +1,5 @@
 import Paper from '@mui/material/Paper';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { createEditor, Descendant } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
 import { Note, useSetEditorController } from '../../common';
@@ -20,7 +20,7 @@ export const EditableNote = ({
   onBlur?: (text: string) => void;
   onChange?: (text: string) => void;
 }) => {
-  const editor = useMemo(() => withReact(createEditor() as ReactEditor), []);
+  const editor = useRef(withReact(createEditor() as ReactEditor)).current;
   const [editorValue, setEditorValue] = useState<Descendant[]>(data.text ? deserialize(data.text) : emptyEditorValue);
   const setEditorController = useSetEditorController();
 
