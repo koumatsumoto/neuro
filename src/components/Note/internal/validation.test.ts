@@ -7,7 +7,10 @@ test('getNoteValidation', () => {
   const validation = getNoteValidation(source);
 
   expect(validation({ ...valid })).toBeNull();
+  // id
   expect(validation({ ...valid, id: 'other id' })).toEqual(expect.arrayContaining(['id should not be changed']));
-  expect(validation({ ...valid, text: '' })).toEqual(['text should not be empty']);
-  expect(validation({ ...valid, text: source.text })).toEqual(['text should be changed']);
+  // text
+  expect(validation({ ...valid, text: '' })).toEqual(expect.arrayContaining(['text should not be empty']));
+  expect(validation({ ...valid, text: ' \n\t　' })).toEqual(expect.arrayContaining(['text should not be only whitespaces']));
+  expect(validation({ ...valid, text: source.text })).toEqual(expect.arrayContaining(['text should be changed']));
 });
