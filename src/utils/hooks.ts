@@ -28,3 +28,7 @@ export const useSubscribe: UseSubscribe = <V>(observable: Observable<V>, params:
 
   return value;
 };
+
+export const useDebug = (value: unknown, label?: string) => {
+  useEffect(() => console.log(`[debug]${label ? ` ${label}` : ''}:`, value), [value]);
+};
