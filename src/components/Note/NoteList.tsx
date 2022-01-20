@@ -1,7 +1,8 @@
 import Box from '@mui/material/Box';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Note } from '../../models';
 import { useAppService, useSetUiState } from '../../services';
+import { useSubscribe } from '../../utils';
 import { EditableNote } from './EditableNote';
 import { EditorOutputData, getNoteValidation } from './internal';
 
@@ -27,23 +28,16 @@ export const NoteListLayout: React.FC = ({ children }) => {
 
 export const NoteList = () => {
   const service = useAppService();
+  const notes = useSubscribe(service.notesWithNewOne, { onSubscribe: () => service.loadNotes(), initialValue: [] });
   const setUiState = useSetUiState();
-  const [lastSavedNoteId, setLastSavedNoteId] = useState<string>(); // to control reloading notes from storage
-  const [notes, setNotes] = useState([] as Note[]);
 
-  // reload notes on lastSavedNoteId changed
-  useEffect(() => {
-    setNotes([Note.create(), ...service.loadSavedNotes()]);
-  }, [setNotes, service, lastSavedNoteId]);
-
-  const Notes = notes.map((note) => {
+  const makeNote = (note: Note) => {
     const validate = getNoteValidation(note);
     const save = (data: EditorOutputData) => {
       const newNote = Note.create({ ...note, text: data.text, editorNodes: JSON.stringify(data.editorNodes) });
       const errors = validate(newNote);
       if (errors === null) {
         service.saveNote(newNote);
-        setLastSavedNoteId(newNote.id); // reload notes
       }
     };
 
@@ -51,7 +45,7 @@ export const NoteList = () => {
     const handleFocus = () => setUiState('editing-note');
 
     return <EditableNote key={note.id} data={note} onBlur={handleBlur} onFocus={handleFocus} />;
-  });
+  };
 
-  return <NoteListLayout>{Notes}</NoteListLayout>;
+  return <NoteListLayout>{notes.map(makeNote)}</NoteListLayout>;
 };

@@ -1,4 +1,3 @@
-import { pipe } from 'fp-ts/function';
 import { Note } from '../models';
 
 /**
@@ -17,7 +16,7 @@ export class AppStorage<Data extends StorageData = StorageData> {
   }
 
   loadNotes(): Note[] {
-    return pipe(this.#load('app/notes') ?? [], Note.orderByIdDesc);
+    return this.#load('app/notes') ?? [];
   }
 
   saveNote(note: Note) {

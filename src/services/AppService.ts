@@ -1,23 +1,30 @@
+import { pipe } from 'fp-ts/function';
+import { BehaviorSubject } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { Note } from '../models';
 import { AppStorage } from './AppStorage';
 
+// TODO(refactor): consider renaming to NoteService
 export class AppService {
-  constructor(private readonly storage: AppStorage) {}
+  readonly #notes = new BehaviorSubject([] as Note[]);
 
-  loadSavedNotes() {
-    const notes = this.storage.loadNotes();
-    console.log('[app] loadNotes', notes);
-    return notes;
+  get notesWithNewOne() {
+    return this.#notes.pipe(
+      map(Note.orderByIdDesc),
+      map((notes) => [Note.create(), ...notes]),
+      distinctUntilChanged(), // TODO(feat): check by latest updated time
+    );
   }
 
-  loadLastNotes(): Note | undefined {
-    const note = this.storage.loadNotes().at(-1);
-    console.log('[app] loadLastNotes', note);
-    return note;
+  constructor(private readonly storage: AppStorage) {}
+
+  loadNotes() {
+    const notes = pipe(this.storage.loadNotes(), Note.orderByIdDesc);
+    this.#notes.next(notes);
   }
 
   saveNote(note: Note) {
-    console.log('[app] saveNote', note);
     this.storage.saveNote(note);
+    this.#notes.next([...this.#notes.getValue(), note]);
   }
 }
