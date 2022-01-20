@@ -15,7 +15,7 @@ export const EditableNote = ({
   onChange = noop,
 }: {
   data: Note;
-  onFocus?: () => void;
+  onFocus?: (editor: ReactEditor) => void;
   onBlur?: (data: EditorOutputData) => void;
   onChange?: (data: EditorOutputData) => void;
 }) => {
@@ -53,12 +53,12 @@ export const EditableNote = ({
       if (!ReactEditor.isFocused(editor)) {
         onBlur(makeEditorOutputData(editor.children));
       }
-    }, 160);
+    }, 100);
   }, [editor, onBlur]);
 
   const handleFocus = useCallback(() => {
     setEditorController(new EditorController(editor));
-    onFocus();
+    onFocus(editor);
   }, [setEditorController, editor, onFocus]);
 
   const renderElement = useCallback((props: RenderElementProps) => {

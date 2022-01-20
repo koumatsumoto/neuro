@@ -12,20 +12,6 @@ export const useAppService = () => {
   return useRecoilValue(appService);
 };
 
-type UiState = 'default' | 'editing-note';
-const uiState = atom<UiState>({
-  key: 'atom/uiState',
-  default: 'default',
-});
-
-export const useUiState = () => {
-  return useRecoilValue(uiState);
-};
-
-export const useSetUiState = () => {
-  return useRecoilState(uiState)[1];
-};
-
 const editorController = atom<EditorController | null>({
   key: 'atom/EditorController',
   default: null,

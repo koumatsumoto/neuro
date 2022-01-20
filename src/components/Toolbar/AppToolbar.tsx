@@ -2,14 +2,15 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import * as React from 'react';
-import { useUiState } from '../../services';
+import { useAppService } from '../../services';
+import { useSubscribe } from '../../utils';
 import { EditorToolbar } from './EditorToolbar';
 import { SearchToolbar } from './SearchToolbar';
 
 export const AppToolbar = () => {
-  const uiState = useUiState();
-
-  const toolbar = uiState === 'editing-note' ? <EditorToolbar /> : <SearchToolbar />;
+  const service = useAppService();
+  const isEditorActive = useSubscribe(service.hasActiveEditor, { initialValue: false });
+  const toolbar = isEditorActive ? <EditorToolbar /> : <SearchToolbar />;
 
   return (
     <Box>

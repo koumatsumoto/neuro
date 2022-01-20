@@ -1,7 +1,8 @@
 import Box from '@mui/material/Box';
 import React from 'react';
+import { ReactEditor } from 'slate-react';
 import { Note } from '../../models';
-import { useAppService, useSetUiState } from '../../services';
+import { useAppService } from '../../services';
 import { useSubscribe } from '../../utils';
 import { EditableNote } from './EditableNote';
 import { EditorOutputData, getNoteValidation } from './internal';
@@ -28,8 +29,7 @@ export const NoteListLayout: React.FC = ({ children }) => {
 
 export const NoteList = () => {
   const service = useAppService();
-  const notes = useSubscribe(service.notesWithNewOne, { onSubscribe: () => service.loadNotes(), initialValue: [] });
-  const setUiState = useSetUiState();
+  const notes = useSubscribe(service.notesWithNewOne, { onSubscribe: () => service.loadNotes, initialValue: [] });
 
   const makeNote = (note: Note) => {
     const validate = getNoteValidation(note);
@@ -41,8 +41,8 @@ export const NoteList = () => {
       }
     };
 
-    const handleBlur = (data: EditorOutputData) => (save(data), setUiState('default'));
-    const handleFocus = () => setUiState('editing-note');
+    const handleBlur = (data: EditorOutputData) => (save(data), service.resetActiveEditor());
+    const handleFocus = (editor: ReactEditor) => service.setActiveEditor(editor);
 
     return <EditableNote key={note.id} data={note} onBlur={handleBlur} onFocus={handleFocus} />;
   };

@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Observable } from 'rxjs';
 
 interface UseSubscribe {
-  <V>(observable: Observable<V>, { onSubscribe, initialValue }: { onSubscribe?: () => void; initialValue: undefined }): V | undefined;
-  <V>(observable: Observable<V>, { onSubscribe, initialValue }: { onSubscribe?: () => void; initialValue: V }): V;
+  <V>(observable: Observable<V>, { onSubscribe, initialValue }?: { onSubscribe?: () => void; initialValue: undefined }): V | undefined;
+  <V>(observable: Observable<V>, { onSubscribe, initialValue }?: { onSubscribe?: () => void; initialValue: V }): V;
 }
 
 export const useSubscribe: UseSubscribe = <V>(observable: Observable<V>, { onSubscribe, initialValue }: { onSubscribe?: () => void; initialValue?: V } = {}) => {
