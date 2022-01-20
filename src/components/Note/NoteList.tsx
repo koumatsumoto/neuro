@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import React, { useEffect, useState } from 'react';
-import { createNote, Note, useAppService, useSetUiState } from '../../common';
+import { Note, useAppService, useSetUiState } from '../../common';
 import { EditableNote } from './EditableNote';
 import { getNoteValidation } from './internal/validation';
 
@@ -32,7 +32,7 @@ export const NoteList = () => {
 
   // reload notes on lastSavedNoteId changed
   useEffect(() => {
-    setNotes([createNote(), ...service.loadSavedNotes()]);
+    setNotes([Note.create(), ...service.loadSavedNotes()]);
   }, [setNotes, service, lastSavedNoteId]);
 
   const Notes = notes.map((note) => {
