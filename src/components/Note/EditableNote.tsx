@@ -56,7 +56,7 @@ export const EditableNote = ({
         maxWidth: '100%',
         padding: '18px 16px 24px',
         '& *': {
-          fontSize: '13px',
+          fontSize: '12px',
         },
       }}
     >
