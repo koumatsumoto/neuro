@@ -7,11 +7,9 @@ interface UseSubscribe {
   <V>(observable: Observable<V>, params?: { initialValue?: V; onSubscribe?: () => void; onNext?: (v: V) => void }): V | undefined;
 }
 
-export const useSubscribe: UseSubscribe = <V>(
-  observable: Observable<V>,
-  { initialValue, onSubscribe, onNext }: { onSubscribe?: () => void; initialValue?: V; onNext?: (v: V) => void } = {},
-) => {
+export const useSubscribe: UseSubscribe = <V>(observable: Observable<V>, params: { onSubscribe?: () => void; initialValue?: V; onNext?: (v: V) => void } = {}) => {
   const $ = useRef(observable).current;
+  const { initialValue, onSubscribe, onNext } = useRef(params).current;
   const [value, setValue] = useState(initialValue);
 
   useEffect(() => {
@@ -26,7 +24,7 @@ export const useSubscribe: UseSubscribe = <V>(
     }
 
     return () => subscription.unsubscribe();
-  }, [$]);
+  }, [$, onSubscribe, onNext]);
 
   return value;
 };
