@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { useEditorController } from '../../common';
+import { useEditorController } from '../../services';
 
 export const EditorToolbar = () => {
   const editorController = useEditorController();

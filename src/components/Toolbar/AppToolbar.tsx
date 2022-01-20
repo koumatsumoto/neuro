@@ -2,7 +2,7 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import * as React from 'react';
-import { useUiState } from '../../common';
+import { useUiState } from '../../services';
 import { EditorToolbar } from './EditorToolbar';
 import { SearchToolbar } from './SearchToolbar';
 
