@@ -1,6 +1,5 @@
 import React from 'react';
-import { BaseEditor, BaseElement, BaseText } from 'slate';
-import { ReactEditor, RenderElementProps, RenderLeafProps } from 'slate-react';
+import { RenderElementProps, RenderLeafProps } from 'slate-react';
 
 export const SimpleTextElement = (props: RenderElementProps) => {
   return <p {...props.attributes}>{props.children}</p>;
@@ -22,12 +21,5 @@ export const Leaf = (props: RenderLeafProps) => {
   );
 };
 
-// @see https://docs.slatejs.org/concepts/12-typescript
-type CustomProps = { type?: string; bold?: boolean };
-declare module 'slate' {
-  interface CustomTypes {
-    Editor: (BaseEditor & CustomProps) & ReactEditor;
-    Element: (BaseElement & CustomProps) | { type: 'simple-text'; children: typeof SimpleTextElement[] } | { type: 'code'; children: typeof CodeBlockElement[] };
-    Text: BaseText & CustomProps;
-  }
-}
+export type CustomProps = { type?: string; bold?: boolean };
+export type CustomElements = { type: 'simple-text'; children: typeof SimpleTextElement[] } | { type: 'code'; children: typeof CodeBlockElement[] };

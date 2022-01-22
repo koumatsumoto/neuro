@@ -1,16 +1,13 @@
 import { BehaviorSubject } from 'rxjs';
-import { distinctUntilChanged, filter, map, mergeMap, withLatestFrom } from 'rxjs/operators';
-import { ReactEditor } from 'slate-react';
+import { distinctUntilChanged, map, mergeMap } from 'rxjs/operators';
+import { Editor } from 'slate';
 import { Note } from '../models';
 import { AppStorage } from './AppStorage';
-
-type EditorCommand = 'AddHash' | 'AddAt' | 'AddSlash' | '';
 
 // TODO(refactor): consider renaming to NoteService
 export class AppUseCases {
   readonly #notes = new BehaviorSubject<Note[]>([]);
-  readonly #activeEditor = new BehaviorSubject<ReactEditor | null>(null);
-  readonly #editorCommand = new BehaviorSubject<EditorCommand>('');
+  readonly #activeEditor = new BehaviorSubject<Editor | null>(null);
 
   constructor(private readonly storage: AppStorage) {}
 
@@ -40,7 +37,7 @@ export class AppUseCases {
     this.#notes.next(notes);
   }
 
-  setActiveEditor(editor: ReactEditor) {
+  setActiveEditor(editor: Editor) {
     this.#activeEditor.next(editor);
   }
 
@@ -48,23 +45,15 @@ export class AppUseCases {
     this.#activeEditor.next(null);
   }
 
-  getCommandsOf(editor: ReactEditor) {
-    return this.#editorCommand.pipe(
-      withLatestFrom(this.#activeEditor),
-      filter(([, e]) => editor === e),
-      map(([command]) => command),
-    );
-  }
-
   addHash() {
-    this.#editorCommand.next('AddHash');
+    this.#activeEditor.getValue()?.customCommands.addHash();
   }
 
   addAt() {
-    this.#editorCommand.next('AddAt');
+    this.#activeEditor.getValue()?.customCommands.addAt();
   }
 
   addSlash() {
-    this.#editorCommand.next('AddSlash');
+    this.#activeEditor.getValue()?.customCommands.addSlash();
   }
 }

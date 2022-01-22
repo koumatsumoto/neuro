@@ -17,7 +17,7 @@ export const makeEditorOutputData = (nodes: Descendant[]): EditorOutputData => {
   return { text: serialize(nodes), editorNodes: nodes };
 };
 
-export const resetNodes = (editor: ReactEditor, options: { nodes?: Node | Node[]; at?: Location }) => {
+export const resetNodes = (editor: Editor, options: { nodes?: Node | Node[]; at?: Location }) => {
   const children = [...editor.children];
 
   children.forEach((node) => editor.apply({ type: 'remove_node', path: [0], node }));
@@ -43,17 +43,17 @@ export const getInitialEditorValue = (note: Note) => {
   }
 };
 
-export const addHash = (editor: ReactEditor) => {
+export const addHash = (editor: Editor) => {
   Transforms.insertText(editor, '#');
   ReactEditor.focus(editor);
 };
 
-export const addAt = (editor: ReactEditor) => {
+export const addAt = (editor: Editor) => {
   Transforms.insertText(editor, '@');
   ReactEditor.focus(editor);
 };
 
-export const addSlash = (editor: ReactEditor) => {
+export const addSlash = (editor: Editor) => {
   Transforms.insertText(editor, '/');
   ReactEditor.focus(editor);
 };

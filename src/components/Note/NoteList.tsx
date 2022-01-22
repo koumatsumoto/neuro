@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import React from 'react';
-import { ReactEditor } from 'slate-react';
+import { Editor } from 'slate';
 import { Note } from '../../models';
 import { useAppUseCases } from '../../services';
 import { useSubscribe } from '../../utils';
@@ -44,7 +44,7 @@ export const NoteList = () => {
     };
 
     const handleBlur = (data: EditorOutputData) => (save(data), usecases.resetActiveEditor());
-    const handleFocus = (editor: ReactEditor) => usecases.setActiveEditor(editor);
+    const handleFocus = (editor: Editor) => usecases.setActiveEditor(editor);
 
     return <EditableNote key={note.id} data={note} onBlur={handleBlur} onFocus={handleFocus} />;
   };

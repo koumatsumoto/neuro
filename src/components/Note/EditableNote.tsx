@@ -5,13 +5,9 @@ import React, { useCallback, useRef, useState } from 'react';
 import { createEditor, Descendant, Editor, Text, Transforms } from 'slate';
 import { Editable, ReactEditor, RenderElementProps, RenderLeafProps, Slate, withReact } from 'slate-react';
 import { Note } from '../../models';
-import { useAppUseCases } from '../../services';
-import { debug, noop, useSubscribe } from '../../utils';
+import { debug, noop } from '../../utils';
 import { NoteMetadata } from './Metadata';
 import {
-  addAt,
-  addHash,
-  addSlash,
   CodeBlockElement,
   debugNodes,
   disableControlKeyShortcuts,
@@ -22,6 +18,7 @@ import {
   makeEditorOutputData,
   onCtrlAnd,
   SimpleTextElement,
+  withCustomCommands,
 } from './internal';
 
 export const EditableNote = ({
@@ -31,28 +28,12 @@ export const EditableNote = ({
   onChange = noop,
 }: {
   data: Note;
-  onFocus?: (editor: ReactEditor) => void;
+  onFocus?: (editor: Editor) => void;
   onBlur?: (data: EditorOutputData) => void;
   onChange?: (data: EditorOutputData) => void;
 }) => {
-  const editor = useRef(withReact(createEditor() as ReactEditor)).current;
+  const editor = useRef(withCustomCommands(withReact(createEditor()))).current;
   const [editorValue, setEditorValue] = useState<Descendant[]>(getInitialEditorValue(data));
-
-  const usecases = useAppUseCases();
-  useSubscribe(usecases.getCommandsOf(editor), {
-    onNext: (command) => {
-      switch (command) {
-        case 'AddHash':
-          return addHash(editor);
-        case 'AddAt':
-          return addAt(editor);
-        case 'AddSlash':
-          return addSlash(editor);
-        default:
-          return;
-      }
-    },
-  });
 
   const handleChange = useCallback(
     (value: Descendant[]) => {
