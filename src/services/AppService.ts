@@ -12,6 +12,8 @@ export class AppService {
   readonly #activeEditor = new BehaviorSubject<ReactEditor | null>(null);
   readonly #editorCommand = new BehaviorSubject<EditorCommand>('');
 
+  constructor(private readonly storage: AppStorage) {}
+
   get notesWithNewOne() {
     return this.#notes.pipe(
       map(Note.orderByIdDesc),
@@ -27,8 +29,6 @@ export class AppService {
   get hasActiveEditor() {
     return this.#activeEditor.pipe(map(Boolean));
   }
-
-  constructor(private readonly storage: AppStorage) {}
 
   loadNotes() {
     const notes = this.storage.loadNotes();
