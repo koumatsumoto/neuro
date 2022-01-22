@@ -2,8 +2,7 @@ import Box from '@mui/material/Box';
 import React from 'react';
 import { Editor } from 'slate';
 import { Note } from '../../models';
-import { useAppUseCases } from '../../services';
-import { useSubscribe } from '../../utils';
+import { useAppQuery, useAppUseCases } from '../../services';
 import { EditableNote } from './EditableNote';
 import { EditorOutputData } from './internal';
 
@@ -29,7 +28,7 @@ export const NoteListLayout: React.FC = ({ children }) => {
 
 export const NoteList = () => {
   const usecases = useAppUseCases();
-  const notes = useSubscribe(usecases.notesWithNewOne, { onSubscribe: () => usecases.loadNotes(), initialValue: [] });
+  const notes = useAppQuery((us) => us.queryNotesWithReloading(), { initial: [] });
 
   const makeNote = (note: Note) => {
     const save = async (data: EditorOutputData) => await usecases.saveNote(note, { text: data.text, editorNodes: JSON.stringify(data.editorNodes) });

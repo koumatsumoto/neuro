@@ -1,9 +1,9 @@
 import { Observable } from 'rxjs';
 
-type Query = Observable<any> | ((...args: any[]) => Observable<any>);
-type Command = (...args: any[]) => void;
+// TODO(feat): support parameterized query ((...args: any[]) => Observable<any>)
+export type Query<T extends any> = Observable<T>;
+export type Command<Params extends any[]> = (...args: Params) => void | Promise<void>;
 
-// UseCase is consists of Queries and Commands
-interface UseCases {
-  [method: string]: Query | Command;
-}
+export type UseCase = Query<any> | Command<any[]>;
+
+export interface UseCases {}
