@@ -1,10 +1,8 @@
 import Box from '@mui/material/Box';
 import React from 'react';
-import { Editor } from 'slate';
 import { Note } from '../../models';
-import { useAppQuery, useAppUseCases } from '../../services';
+import { useCommand, useQuery } from '../../services';
 import { EditableNote } from './EditableNote';
-import { EditorOutputData } from './internal';
 
 export const NoteListLayout: React.FC = ({ children }) => {
   return (
@@ -27,15 +25,19 @@ export const NoteListLayout: React.FC = ({ children }) => {
 };
 
 export const NoteList = () => {
-  const usecases = useAppUseCases();
-  const notes = useAppQuery((us) => us.queryNotesWithReloading(), { initial: [] });
+  const notes = useQuery((us) => us.queryNotesWithReloading(), { initial: [] });
+  const saveNoteAndChangeEditorInactive = useCommand((us) => us.changeEditorInactiveAndSaveNote);
+  const changeEditorActive = useCommand((us) => us.changeEditorActive);
 
   const makeNote = (note: Note) => {
-    const save = async (data: EditorOutputData) => await usecases.saveNote(note, { text: data.text, editorNodes: JSON.stringify(data.editorNodes) });
-    const handleBlur = (data: EditorOutputData) => (save(data), usecases.resetActiveEditor());
-    const handleFocus = (editor: Editor) => usecases.setActiveEditor(editor);
-
-    return <EditableNote key={note.id} data={note} onBlur={handleBlur} onFocus={handleFocus} />;
+    return (
+      <EditableNote
+        key={note.id}
+        data={note}
+        onBlur={(data) => saveNoteAndChangeEditorInactive(note, { text: data.text, editorNodes: JSON.stringify(data.editorNodes) })}
+        onFocus={(editor) => changeEditorActive(editor)}
+      />
+    );
   };
 
   return <NoteListLayout>{notes.map(makeNote)}</NoteListLayout>;

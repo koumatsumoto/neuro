@@ -29,23 +29,13 @@ export class AppUseCases implements UseCases {
     );
   }
 
-  async saveNote(source: Note, updates: Pick<Note, 'text' | 'editorNodes'>) {
-    const newNote = await Note.create({ ...source, text: updates.text, editorNodes: updates.editorNodes });
-    const errors = Note.validateUpdates(source, newNote);
-    if (errors === null) {
-      const notes = this.storage.saveNote(newNote);
-      this.#notes.next(notes);
-    } else {
-      console.log('[AppUseCases/updateNote/errors]', { errors, source, updates });
-    }
-  }
-
-  setActiveEditor(editor: Editor) {
-    this.#activeEditor.next(editor);
-  }
-
-  resetActiveEditor() {
+  async changeEditorInactiveAndSaveNote(source: Note, updates: Pick<Note, 'text' | 'editorNodes'>) {
     this.#activeEditor.next(null);
+    await this.saveNote(source, updates);
+  }
+
+  async changeEditorActive(editor: Editor) {
+    this.#activeEditor.next(editor);
   }
 
   addHash() {
@@ -63,5 +53,16 @@ export class AppUseCases implements UseCases {
   private loadNotes() {
     const notes = this.storage.loadNotes();
     this.#notes.next(notes);
+  }
+
+  private async saveNote(source: Note, updates: Pick<Note, 'text' | 'editorNodes'>) {
+    const newNote = await Note.create({ ...source, text: updates.text, editorNodes: updates.editorNodes });
+    const errors = Note.validateUpdates(source, newNote);
+    if (errors === null) {
+      const notes = this.storage.saveNote(newNote);
+      this.#notes.next(notes);
+    } else {
+      console.log('[AppUseCases/updateNote/errors]', { errors, source, updates });
+    }
   }
 }
