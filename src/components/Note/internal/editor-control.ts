@@ -32,7 +32,7 @@ export const resetNodes = (editor: Editor, options: { nodes?: Node | Node[]; at?
   }
 };
 
-export const getInitialEditorValue = (note: Note) => {
+export const getInitialEditorValue = (note: Pick<Note, 'text' | 'editorNodes'>) => {
   if (note.editorNodes) {
     return JSON.parse(note.editorNodes);
   } else if (note.text) {

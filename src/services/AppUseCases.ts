@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilChanged, map, mergeMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Editor } from 'slate';
 import { Note } from '../models';
 import { AppStorage } from './AppStorage';
@@ -23,8 +23,7 @@ export class AppUseCases implements UseCases {
 
     return this.#notes.pipe(
       map(Note.orderByCreatedNewer),
-      mergeMap((notes) => Note.create().then((note) => [note, ...notes])),
-      distinctUntilChanged(), // TODO(feat): check by latest updated time
+      map((notes) => [Note.createNewOne(), ...notes]),
     );
   }
 
@@ -51,15 +50,16 @@ export class AppUseCases implements UseCases {
 
   #loadNotes() {
     const notes = this.#storage.loadNotes();
-    this.#notes.next(notes);
+    const notesOfLastChild = Note.filterLastChild(Object.values(notes));
+    this.#notes.next(notesOfLastChild);
   }
 
   async #saveNote(source: Note, updates: Pick<Note, 'text' | 'editorNodes'>) {
-    const newNote = await Note.create({ ...source, text: updates.text, editorNodes: updates.editorNodes });
+    const newNote = await Note.createChild(source, { text: updates.text, editorNodes: updates.editorNodes });
     const errors = Note.validateUpdates(source, newNote);
     if (errors === null) {
-      const notes = this.#storage.saveNote(newNote);
-      this.#notes.next(notes);
+      this.#storage.saveNote(newNote);
+      this.#loadNotes();
     } else {
       console.log('[AppUseCases/updateNote/errors]', { errors, source, updates });
     }

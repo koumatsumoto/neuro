@@ -5,7 +5,7 @@ import { Note } from '../models';
  *  - app/notes: string[]
  */
 type StorageData = {
-  'app/notes': Note[];
+  'app/notes': Record<Note['id'], Note>;
 };
 
 export class AppStorage<Data extends StorageData = StorageData> {
@@ -15,18 +15,15 @@ export class AppStorage<Data extends StorageData = StorageData> {
     this.#keyPrefix = `${version}/${dbname}/`;
   }
 
-  loadNotes(): Note[] {
-    return this.#load('app/notes') ?? [];
+  loadNotes(): Record<Note['id'], Note> {
+    return this.#load('app/notes') ?? {};
   }
 
-  saveNote(note: Note): Note[] {
-    const isEqualToNewOne = Note.isEqualTo(note);
-    const notesInStorage = this.loadNotes();
-    const isUpdateExistence = notesInStorage.some(isEqualToNewOne);
-    const newNotes = isUpdateExistence ? notesInStorage.map((n) => (isEqualToNewOne(n) ? { ...n, ...note } : n)) : [...notesInStorage, note];
-    this.#save('app/notes', newNotes);
+  saveNote(note: Note): Record<Note['id'], Note> {
+    const notes = { ...this.loadNotes(), [note.id]: note };
+    this.#save('app/notes', notes);
 
-    return newNotes;
+    return notes;
   }
 
   #load<Key extends keyof Data & string>(key: Key): Data[Key] | null {

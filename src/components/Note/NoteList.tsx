@@ -32,7 +32,7 @@ export const NoteList = () => {
   const createEditableNote = (note: Note) => {
     return (
       <EditableNote
-        key={note.id}
+        key={note.uid}
         data={note}
         onBlur={(data) => saveNoteAndChangeEditorInactive(note, { text: data.text, editorNodes: JSON.stringify(data.editorNodes) })}
         onFocus={(editor) => changeEditorActive(editor)}
