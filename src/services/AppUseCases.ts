@@ -7,7 +7,7 @@ import { AppStorage } from './AppStorage';
 type EditorCommand = 'AddHash' | 'AddAt' | 'AddSlash' | '';
 
 // TODO(refactor): consider renaming to NoteService
-export class AppService {
+export class AppUseCases {
   readonly #notes = new BehaviorSubject<Note[]>([]);
   readonly #activeEditor = new BehaviorSubject<ReactEditor | null>(null);
   readonly #editorCommand = new BehaviorSubject<EditorCommand>('');

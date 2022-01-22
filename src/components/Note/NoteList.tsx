@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import React from 'react';
 import { ReactEditor } from 'slate-react';
 import { Note } from '../../models';
-import { useAppService } from '../../services';
+import { useAppUseCases } from '../../services';
 import { useSubscribe } from '../../utils';
 import { EditableNote } from './EditableNote';
 import { EditorOutputData, getNoteValidation } from './internal';
@@ -28,8 +28,8 @@ export const NoteListLayout: React.FC = ({ children }) => {
 };
 
 export const NoteList = () => {
-  const service = useAppService();
-  const notes = useSubscribe(service.notesWithNewOne, { onSubscribe: () => service.loadNotes(), initialValue: [] });
+  const usecases = useAppUseCases();
+  const notes = useSubscribe(usecases.notesWithNewOne, { onSubscribe: () => usecases.loadNotes(), initialValue: [] });
 
   const makeNote = (note: Note) => {
     const validate = getNoteValidation(note);
@@ -37,14 +37,14 @@ export const NoteList = () => {
       const newNote = await Note.create({ ...note, text: data.text, editorNodes: JSON.stringify(data.editorNodes) });
       const errors = validate(newNote);
       if (errors === null) {
-        service.saveNote(newNote);
+        usecases.saveNote(newNote);
       } else {
         console.log('[note/save/errors]', errors);
       }
     };
 
-    const handleBlur = (data: EditorOutputData) => (save(data), service.resetActiveEditor());
-    const handleFocus = (editor: ReactEditor) => service.setActiveEditor(editor);
+    const handleBlur = (data: EditorOutputData) => (save(data), usecases.resetActiveEditor());
+    const handleFocus = (editor: ReactEditor) => usecases.setActiveEditor(editor);
 
     return <EditableNote key={note.id} data={note} onBlur={handleBlur} onFocus={handleFocus} />;
   };

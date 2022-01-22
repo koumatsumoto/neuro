@@ -5,7 +5,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import { createEditor, Descendant, Editor, Text, Transforms } from 'slate';
 import { Editable, ReactEditor, RenderElementProps, RenderLeafProps, Slate, withReact } from 'slate-react';
 import { Note } from '../../models';
-import { useAppService } from '../../services';
+import { useAppUseCases } from '../../services';
 import { debug, noop, useSubscribe } from '../../utils';
 import { NoteMetadata } from './Metadata';
 import {
@@ -38,8 +38,8 @@ export const EditableNote = ({
   const editor = useRef(withReact(createEditor() as ReactEditor)).current;
   const [editorValue, setEditorValue] = useState<Descendant[]>(getInitialEditorValue(data));
 
-  const service = useAppService();
-  useSubscribe(service.getCommandsOf(editor), {
+  const usecases = useAppUseCases();
+  useSubscribe(usecases.getCommandsOf(editor), {
     onNext: (command) => {
       switch (command) {
         case 'AddHash':

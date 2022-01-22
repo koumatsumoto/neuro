@@ -1,16 +1,16 @@
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { useAppService } from '../../services';
+import { useAppUseCases } from '../../services';
 
 export const EditorToolbar = () => {
-  const service = useAppService();
+  const usecases = useAppUseCases();
 
   return (
     <>
       <ButtonGroup variant="contained" size="small" aria-label="outlined button group">
-        <Button onClick={() => service.addHash()}>#</Button>
-        <Button onClick={() => service.addAt()}>@</Button>
-        <Button onClick={() => service.addSlash()}>/</Button>
+        <Button onClick={() => usecases.addHash()}>#</Button>
+        <Button onClick={() => usecases.addAt()}>@</Button>
+        <Button onClick={() => usecases.addSlash()}>/</Button>
       </ButtonGroup>
     </>
   );
