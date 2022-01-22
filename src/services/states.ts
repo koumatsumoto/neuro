@@ -14,20 +14,20 @@ export const useAppUseCases = () => {
 };
 
 interface UseQuery<U extends UseCases = UseCases> {
-  <V>(querySelector: (usecases: U) => Query<V>, params?: { initial: undefined }): V | undefined;
-  <V>(querySelector: (usecases: U) => Query<V>, params?: { initial: V }): V;
-  <V>(querySelector: (usecases: U) => Query<V>, params?: { initial?: V }): V | undefined;
+  <T>(selector: (usecases: U) => Query<T>, initialValue: undefined): T | undefined;
+  <T>(selector: (usecases: U) => Query<T>, initialValue: T): T;
+  <T>(selector: (usecases: U) => Query<T>, initialValue: T | undefined): T | undefined;
 }
 
 interface UseCommand<U extends UseCases = UseCases> {
   <T extends Function>(commandSelector: (usecases: U) => T): T;
 }
 
-export const useQuery: UseQuery<AppUseCases> = <T>(...args: [(usecases: AppUseCases) => Query<T>, { initial?: T } | undefined]) => {
-  const [selector, params = {}] = useRef(args).current;
+export const useQuery: UseQuery<AppUseCases> = <T>(...args: [(usecases: AppUseCases) => Query<T>, T | undefined]) => {
   const usecases = useRecoilValue(appUseCases);
+  const [selector, initialValue] = useRef(args).current;
   const query = useMemo(() => selector(usecases), [selector, usecases]);
-  const [value, setValue] = useState<T | undefined>(params.initial);
+  const [value, setValue] = useState<T | undefined>(initialValue);
 
   useEffect(() => {
     const subscription = query.subscribe((value) => setValue(value));
@@ -39,8 +39,8 @@ export const useQuery: UseQuery<AppUseCases> = <T>(...args: [(usecases: AppUseCa
 };
 
 export const useCommand: UseCommand<AppUseCases> = <C extends Function>(...args: [(usecases: AppUseCases) => C]): C => {
-  const [selector] = useRef(args).current;
   const usecases = useRecoilValue(appUseCases);
+  const [selector] = useRef(args).current;
   const command = useMemo(() => selector(usecases).bind(usecases), [selector, usecases]);
 
   return command;

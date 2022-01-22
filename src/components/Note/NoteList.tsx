@@ -25,11 +25,11 @@ export const NoteListLayout: React.FC = ({ children }) => {
 };
 
 export const NoteList = () => {
-  const notes = useQuery((us) => us.queryNotesWithReloading(), { initial: [] });
-  const saveNoteAndChangeEditorInactive = useCommand((us) => us.changeEditorInactiveAndSaveNote);
-  const changeEditorActive = useCommand((us) => us.changeEditorActive);
+  const loadedNotes = useQuery((usecases) => usecases.queryNotesWithReloading(), []);
+  const saveNoteAndChangeEditorInactive = useCommand((usecases) => usecases.changeEditorInactiveAndSaveNote);
+  const changeEditorActive = useCommand((usecases) => usecases.changeEditorActive);
 
-  const makeNote = (note: Note) => {
+  const createEditableNote = (note: Note) => {
     return (
       <EditableNote
         key={note.id}
@@ -40,5 +40,5 @@ export const NoteList = () => {
     );
   };
 
-  return <NoteListLayout>{notes.map(makeNote)}</NoteListLayout>;
+  return <NoteListLayout>{loadedNotes.map(createEditableNote)}</NoteListLayout>;
 };
