@@ -1,5 +1,4 @@
-import { Note } from '../../../models';
-import { getNoteValidation } from './validation';
+import { getNoteValidation, Note } from './Note';
 
 test('getNoteValidation', () => {
   const source = { id: 'id', text: 'text', createdAt: 1 } as Note;
@@ -7,8 +6,6 @@ test('getNoteValidation', () => {
   const validation = getNoteValidation(source);
 
   expect(validation({ ...valid })).toBeNull();
-  // id
-  expect(validation({ ...valid, id: 'other id' })).toEqual(expect.arrayContaining(['id should not be changed']));
   // text
   expect(validation({ ...valid, text: '' })).toEqual(expect.arrayContaining(['text should not be empty']));
   expect(validation({ ...valid, text: ' \n\t　' })).toEqual(expect.arrayContaining(['text should not be only whitespaces']));

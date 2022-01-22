@@ -1,9 +1,10 @@
 import { sort } from 'fp-ts/Array';
-import { contramap, equals, reverse } from 'fp-ts/Ord';
+import * as Ord from 'fp-ts/Ord';
+import * as Predicate from 'fp-ts/Predicate';
 import { pipe } from 'fp-ts/function';
 import * as N from 'fp-ts/number';
 import * as S from 'fp-ts/string';
-import { Crypto } from '../utils';
+import { Crypto, getValidation } from '../../utils';
 
 /**
  * @Note IDの計算
@@ -39,14 +40,31 @@ const toId = (note: Note) => note.id;
 const toText = (note: Note) => note.text;
 const toCreatedAt = (note: Note) => note.createdAt;
 
-const byId = pipe(S.Ord, contramap(toId));
-const byCreatedAt = pipe(N.Ord, contramap(toCreatedAt));
+const byId = pipe(S.Ord, Ord.contramap(toId));
+const byCreatedAt = pipe(N.Ord, Ord.contramap(toCreatedAt));
+
+const isChangedFrom =
+  <T>(a: T) =>
+  (b: T) =>
+    a !== b;
+const isWhiteSpace = (text: string) => text.trim() === '';
+
+export const getNoteValidation = (source: Note) => {
+  return getValidation<Note>({
+    'text should not be empty': pipe(Predicate.not(S.isEmpty), Predicate.contramap(Note.toText)),
+    'text should not be only whitespaces': pipe(Predicate.not(isWhiteSpace), Predicate.contramap(Note.toText)),
+    'text should be changed': pipe(isChangedFrom(source.text), Predicate.contramap(Note.toText)),
+    // TODO(feat): add more validations
+    //   - 'updatedAt should be changed'
+  });
+};
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const Note = {
   create,
-  isEqualTo: equals(byId),
-  orderByCreatedNewer: sort(reverse(byCreatedAt)),
+  isEqualTo: Ord.equals(byId),
+  orderByCreatedNewer: sort(Ord.reverse(byCreatedAt)),
   toId,
   toText,
+  getNoteValidation,
 } as const;

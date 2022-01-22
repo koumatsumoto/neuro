@@ -4,7 +4,6 @@ import { Editor } from 'slate';
 import { Note } from '../models';
 import { AppStorage } from './AppStorage';
 
-// TODO(refactor): consider renaming to NoteService
 export class AppUseCases {
   readonly #notes = new BehaviorSubject<Note[]>([]);
   readonly #activeEditor = new BehaviorSubject<Editor | null>(null);

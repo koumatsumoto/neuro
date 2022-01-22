@@ -5,7 +5,7 @@ import { Note } from '../../models';
 import { useAppUseCases } from '../../services';
 import { useSubscribe } from '../../utils';
 import { EditableNote } from './EditableNote';
-import { EditorOutputData, getNoteValidation } from './internal';
+import { EditorOutputData } from './internal';
 
 export const NoteListLayout: React.FC = ({ children }) => {
   return (
@@ -32,14 +32,12 @@ export const NoteList = () => {
   const notes = useSubscribe(usecases.notesWithNewOne, { onSubscribe: () => usecases.loadNotes(), initialValue: [] });
 
   const makeNote = (note: Note) => {
-    const validate = getNoteValidation(note);
+    const validate = Note.getNoteValidation(note);
     const save = async (data: EditorOutputData) => {
       const newNote = await Note.create({ ...note, text: data.text, editorNodes: JSON.stringify(data.editorNodes) });
       const errors = validate(newNote);
       if (errors === null) {
         usecases.saveNote(newNote);
-      } else {
-        console.log('[note/save/errors]', errors);
       }
     };
 
