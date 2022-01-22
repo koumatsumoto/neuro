@@ -66,5 +66,5 @@ export const Note = {
   orderByCreatedNewer: sort(Ord.reverse(byCreatedAt)),
   toId,
   toText,
-  getNoteValidation,
+  validateUpdates: (beforeUpdate: Note, afterUpdate: Note) => getNoteValidation(beforeUpdate)(afterUpdate),
 } as const;

@@ -31,9 +31,15 @@ export class AppUseCases {
     this.#notes.next(notes);
   }
 
-  saveNote(note: Note) {
-    const notes = this.storage.saveNote(note);
-    this.#notes.next(notes);
+  async saveNote(source: Note, updates: Pick<Note, 'text' | 'editorNodes'>) {
+    const newNote = await Note.create({ ...source, text: updates.text, editorNodes: updates.editorNodes });
+    const errors = Note.validateUpdates(source, newNote);
+    if (errors === null) {
+      const notes = this.storage.saveNote(newNote);
+      this.#notes.next(notes);
+    } else {
+      console.log('[AppUseCases/updateNote/errors]', { errors, source, updates });
+    }
   }
 
   setActiveEditor(editor: Editor) {

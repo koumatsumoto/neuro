@@ -32,15 +32,7 @@ export const NoteList = () => {
   const notes = useSubscribe(usecases.notesWithNewOne, { onSubscribe: () => usecases.loadNotes(), initialValue: [] });
 
   const makeNote = (note: Note) => {
-    const validate = Note.getNoteValidation(note);
-    const save = async (data: EditorOutputData) => {
-      const newNote = await Note.create({ ...note, text: data.text, editorNodes: JSON.stringify(data.editorNodes) });
-      const errors = validate(newNote);
-      if (errors === null) {
-        usecases.saveNote(newNote);
-      }
-    };
-
+    const save = async (data: EditorOutputData) => await usecases.saveNote(note, { text: data.text, editorNodes: JSON.stringify(data.editorNodes) });
     const handleBlur = (data: EditorOutputData) => (save(data), usecases.resetActiveEditor());
     const handleFocus = (editor: Editor) => usecases.setActiveEditor(editor);
 
