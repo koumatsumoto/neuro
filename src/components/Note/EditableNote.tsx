@@ -77,7 +77,7 @@ export const EditableNote = ({
       if (!ReactEditor.isFocused(editor)) {
         onBlur(makeEditorOutputData(editor.children));
       }
-    }, 100);
+    }, 300);
   }, [editor, onBlur]);
 
   const handleFocus = useCallback(() => {
