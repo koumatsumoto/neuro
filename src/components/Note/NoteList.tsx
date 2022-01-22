@@ -33,11 +33,13 @@ export const NoteList = () => {
 
   const makeNote = (note: Note) => {
     const validate = getNoteValidation(note);
-    const save = (data: EditorOutputData) => {
-      const newNote = Note.create({ ...note, text: data.text, editorNodes: JSON.stringify(data.editorNodes) });
+    const save = async (data: EditorOutputData) => {
+      const newNote = await Note.create({ ...note, text: data.text, editorNodes: JSON.stringify(data.editorNodes) });
       const errors = validate(newNote);
       if (errors === null) {
         service.saveNote(newNote);
+      } else {
+        console.log('[note/save/errors]', errors);
       }
     };
 

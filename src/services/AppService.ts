@@ -1,5 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-import { distinctUntilChanged, filter, map, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, mergeMap, withLatestFrom } from 'rxjs/operators';
 import { ReactEditor } from 'slate-react';
 import { Note } from '../models';
 import { AppStorage } from './AppStorage';
@@ -16,8 +16,8 @@ export class AppService {
 
   get notesWithNewOne() {
     return this.#notes.pipe(
-      map(Note.orderByIdDesc),
-      map((notes) => [Note.create(), ...notes]),
+      map(Note.orderByCreatedNewer),
+      mergeMap((notes) => Note.create().then((note) => [note, ...notes])),
       distinctUntilChanged(), // TODO(feat): check by latest updated time
     );
   }
