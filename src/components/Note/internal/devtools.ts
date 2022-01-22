@@ -7,7 +7,7 @@ export const debugNodes = (editor: ReactEditor) => {
     Array.from(Node.nodes(editor)).map(([node, path]) => ({
       node,
       path,
-      instanceof: Editor.isEditor(node) ? 'Editor' : Element.isElement(node) ? 'Block' : Node.isNode(node) ? 'Node' : 'unknown',
+      instanceof: Editor.isEditor(node) ? 'Editor' : Element.isElement(node) ? 'Element' : Node.isNode(node) ? 'Node' : 'unknown',
     })),
   );
 };

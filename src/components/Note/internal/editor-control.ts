@@ -1,5 +1,4 @@
 import { Descendant, Editor, Location, Node, Point, Transforms } from 'slate';
-import { ReactEditor } from 'slate-react';
 import { Note } from '../../../models';
 
 // for application service
@@ -39,21 +38,6 @@ export const getInitialEditorValue = (note: Note) => {
   } else if (note.text) {
     return deserialize(note.text);
   } else {
-    return [{ children: [{ type: 'simple-text', text: '' }] }];
+    return [{ children: [{ type: 'paragraph', text: '' }] }];
   }
-};
-
-export const addHash = (editor: Editor) => {
-  Transforms.insertText(editor, '#');
-  ReactEditor.focus(editor);
-};
-
-export const addAt = (editor: Editor) => {
-  Transforms.insertText(editor, '@');
-  ReactEditor.focus(editor);
-};
-
-export const addSlash = (editor: Editor) => {
-  Transforms.insertText(editor, '/');
-  ReactEditor.focus(editor);
 };

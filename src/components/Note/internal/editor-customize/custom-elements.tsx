@@ -22,4 +22,4 @@ export const Leaf = (props: RenderLeafProps) => {
 };
 
 export type CustomProps = { type?: string; bold?: boolean };
-export type CustomElements = { type: 'simple-text'; children: typeof SimpleTextElement[] } | { type: 'code'; children: typeof CodeBlockElement[] };
+export type CustomElements = { type: 'paragraph'; children: typeof SimpleTextElement[] } | { type: 'code'; children: typeof CodeBlockElement[] };
