@@ -1,3 +1,5 @@
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import React, { useCallback, useRef, useState } from 'react';
 import { createEditor, Descendant, Editor, Text, Transforms } from 'slate';
@@ -5,6 +7,7 @@ import { Editable, ReactEditor, RenderElementProps, RenderLeafProps, Slate, with
 import { Note } from '../../models';
 import { useAppService } from '../../services';
 import { debug, noop, useSubscribe } from '../../utils';
+import { NoteMetadata } from './Metadata';
 import {
   addAt,
   addHash,
@@ -121,15 +124,22 @@ export const EditableNote = ({
       sx={{
         width: '600px',
         maxWidth: '100%',
-        padding: '18px 16px 24px',
-        '& *': {
-          fontSize: '12px',
-        },
       }}
     >
-      <Slate editor={editor} value={editorValue} onChange={handleChange}>
-        <Editable renderElement={renderElement} renderLeaf={renderLeaf} onKeyDown={handleKeydown} onKeyUp={handleKeyup} onBlur={handleBlur} onFocus={handleFocus} />
-      </Slate>
+      <NoteMetadata data={data} />
+      <Divider />
+      <Box
+        sx={{
+          padding: '12px 16px',
+          '& *': {
+            fontSize: '12px',
+          },
+        }}
+      >
+        <Slate editor={editor} value={editorValue} onChange={handleChange}>
+          <Editable renderElement={renderElement} renderLeaf={renderLeaf} onKeyDown={handleKeydown} onKeyUp={handleKeyup} onBlur={handleBlur} onFocus={handleFocus} />
+        </Slate>
+      </Box>
     </Paper>
   );
 };
