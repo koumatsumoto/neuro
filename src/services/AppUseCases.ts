@@ -2,12 +2,13 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Editor } from 'slate';
 import { Note } from '../models';
-import { AppStorage } from './AppStorage';
+import { filterNullish } from '../utils';
+import { AppStorage, NoteRecords } from './AppStorage';
 import { UseCases } from './interfaces';
 
 export class AppUseCases implements UseCases {
   readonly #storage: AppStorage;
-  readonly #notes = new BehaviorSubject<Note[]>([]);
+  readonly #noteRecords = new BehaviorSubject<NoteRecords | null>(null);
   readonly #activeEditor = new BehaviorSubject<Editor | null>(null);
 
   constructor(storage: AppStorage) {
@@ -18,10 +19,12 @@ export class AppUseCases implements UseCases {
     return this.#activeEditor.pipe(map(Boolean));
   }
 
-  queryNotesWithReloading(): Observable<Note[]> {
+  queryLatestNotesWithReloading(): Observable<Note[]> {
     this.#loadNotes();
 
-    return this.#notes.pipe(
+    return this.#noteRecords.pipe(
+      filterNullish,
+      map(({ latest }) => Object.values(latest)),
       map(Note.orderByCreatedNewer),
       map((notes) => [Note.createNewOne(), ...notes]),
     );
@@ -49,19 +52,16 @@ export class AppUseCases implements UseCases {
   }
 
   #loadNotes() {
-    const notes = this.#storage.loadNotes();
-    const notesOfLastChild = Note.filterLastChild(Object.values(notes));
-    this.#notes.next(notesOfLastChild);
+    this.#noteRecords.next(this.#storage.loadNotes());
   }
 
   async #saveNote(source: Note, updates: Pick<Note, 'text' | 'editorNodes'>) {
-    const newNote = await Note.createChild(source, { text: updates.text, editorNodes: updates.editorNodes });
-    const errors = Note.validateUpdates(source, newNote);
-    if (errors === null) {
-      this.#storage.saveNote(newNote);
-      this.#loadNotes();
-    } else {
-      console.log('[AppUseCases/updateNote/errors]', { errors, source, updates });
-    }
+    await this.#storage.saveNote(source, updates).then(({ errors, data }) => {
+      if (errors) {
+        console.log('[AppUseCases/updateNote/errors]', { errors, source, updates });
+      } else {
+        this.#noteRecords.next(data!);
+      }
+    });
   }
 }

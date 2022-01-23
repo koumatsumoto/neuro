@@ -1,11 +1,16 @@
 import { Note } from '../models';
 
+export type NoteRecords = {
+  all: Record<Note['id'], Note>;
+  latest: Record<Note['id'], Note>;
+  stats: { allCount: number; latestCount: number };
+};
+
 /**
- * Database Schema
- *  - app/notes: string[]
+ * Application Storage Data Schema
  */
 type StorageData = {
-  'app/notes': Record<Note['id'], Note>;
+  '/notes': NoteRecords;
 };
 
 export class AppStorage<Data extends StorageData = StorageData> {
@@ -15,15 +20,26 @@ export class AppStorage<Data extends StorageData = StorageData> {
     this.#keyPrefix = `${version}/${dbname}/`;
   }
 
-  loadNotes(): Record<Note['id'], Note> {
-    return this.#load('app/notes') ?? {};
+  loadNotes(): NoteRecords {
+    return this.#load('/notes') ?? { all: {}, latest: {}, stats: { allCount: 0, latestCount: 0 } };
   }
 
-  saveNote(note: Note): Record<Note['id'], Note> {
-    const notes = { ...this.loadNotes(), [note.id]: note };
-    this.#save('app/notes', notes);
+  async saveNote(source: Note, changes: Pick<Note, 'text' | 'editorNodes'>): Promise<{ errors: string[]; data?: never } | { errors?: never; data: NoteRecords }> {
+    const created = await Note.createChild(source, { text: changes.text, editorNodes: changes.editorNodes });
+    const errors = Note.validateUpdates(source, created);
+    if (errors) {
+      return { errors };
+    }
 
-    return notes;
+    const data = this.loadNotes();
+    data.all[source.id] = { ...source };
+    delete data.latest[source.id];
+    data.all[created.id] = created;
+    data.latest[created.id] = created;
+    data.stats = { allCount: Object.keys(data.all).length, latestCount: Object.keys(data.latest).length };
+    this.#save('/notes', data);
+
+    return { data };
   }
 
   #load<Key extends keyof Data & string>(key: Key): Data[Key] | null {

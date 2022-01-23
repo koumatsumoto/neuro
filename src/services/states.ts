@@ -6,7 +6,7 @@ import { Query, UseCases } from './interfaces';
 
 const appUseCases = atom({
   key: 'atom/appUseCases',
-  default: new AppUseCases(new AppStorage({ version: 'v2' })),
+  default: new AppUseCases(new AppStorage({ version: 'v3' })),
 });
 
 export const useAppUseCases = () => {

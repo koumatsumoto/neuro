@@ -25,7 +25,7 @@ export const NoteListLayout: React.FC = ({ children }) => {
 };
 
 export const NoteList = () => {
-  const loadedNotes = useQuery((usecases) => usecases.queryNotesWithReloading(), []);
+  const loadedNotes = useQuery((usecases) => usecases.queryLatestNotesWithReloading(), []);
   const saveNoteAndChangeEditorInactive = useCommand((usecases) => usecases.changeEditorInactiveAndSaveNote);
   const changeEditorActive = useCommand((usecases) => usecases.changeEditorActive);
 

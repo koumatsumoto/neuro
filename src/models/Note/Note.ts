@@ -1,8 +1,6 @@
 import { sort } from 'fp-ts/Array';
-import * as Eq from 'fp-ts/Eq';
 import * as Ord from 'fp-ts/Ord';
 import * as Predicate from 'fp-ts/Predicate';
-import * as Set from 'fp-ts/Set';
 import { pipe } from 'fp-ts/function';
 import * as N from 'fp-ts/number';
 import * as S from 'fp-ts/string';
@@ -58,15 +56,10 @@ const createChild = async (source: Note, updates: Pick<Note, 'text' | 'editorNod
   };
 };
 
-const toId = (note: Note) => note.id;
 const toText = (note: Note) => note.text;
 const toCreatedAt = (note: Note) => note.createdAt;
-const toParentCount = (note: Note) => note.parentCount;
-const toAncestor = (note: Note) => note.ancestor;
 
-const byParentCountDesc = pipe(N.Ord, Ord.contramap(toParentCount), Ord.reverse);
 const byCreatedAtDesc = pipe(N.Ord, Ord.contramap(toCreatedAt), Ord.reverse);
-const eqAncestor = pipe(S.Eq, Eq.contramap(toAncestor));
 
 const isChangedFrom =
   <T>(a: T) =>
@@ -76,14 +69,10 @@ const isWhiteSpace = (text: string) => text.trim() === '';
 
 export const getNoteValidation = (source: Note) => {
   return getValidation<Note>({
-    'text should not be empty': pipe(Predicate.not(S.isEmpty), Predicate.contramap(Note.toText)),
-    'text should not be only whitespaces': pipe(Predicate.not(isWhiteSpace), Predicate.contramap(Note.toText)),
-    'text should be changed': pipe(isChangedFrom(source.text), Predicate.contramap(Note.toText)),
+    'text should not be empty': pipe(Predicate.not(S.isEmpty), Predicate.contramap(toText)),
+    'text should not be only whitespaces': pipe(Predicate.not(isWhiteSpace), Predicate.contramap(toText)),
+    'text should be changed': pipe(isChangedFrom(source.text), Predicate.contramap(toText)),
   });
-};
-
-const uniqByAncestor = (notes: Note[]) => {
-  return pipe(notes, sort(byParentCountDesc), Set.fromArray(eqAncestor), Set.toArray(byCreatedAtDesc));
 };
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -91,8 +80,5 @@ export const Note = {
   createNewOne,
   createChild,
   orderByCreatedNewer: sort(byCreatedAtDesc),
-  filterLastChild: uniqByAncestor,
-  toId,
-  toText,
   validateUpdates: (beforeUpdate: Note, afterUpdate: Note) => getNoteValidation(beforeUpdate)(afterUpdate),
 } as const;
