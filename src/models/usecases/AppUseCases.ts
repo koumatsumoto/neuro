@@ -20,7 +20,7 @@ export class AppUseCases implements UseCases {
   }
 
   queryLatestNotesWithReloading(): Observable<Note[]> {
-    this.#loadNotes();
+    this.#loadNotes().catch();
 
     return this.#noteRecords.pipe(
       filterNullish,
