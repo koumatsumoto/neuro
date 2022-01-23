@@ -7,6 +7,8 @@ export type NoteRecords = {
   stats: { allCount: number; latestCount: number };
 };
 
+const createInitialNoteRecords = () => ({ all: {}, latest: {}, stats: { allCount: 0, latestCount: 0 } } as const);
+
 /**
  * Application Storage Data Schema
  */
@@ -22,7 +24,7 @@ export class AppRepository {
   }
 
   async loadNotes(): Promise<NoteRecords> {
-    return Promise.resolve().then(() => this.#storage.load('/notes') ?? { all: {}, latest: {}, stats: { allCount: 0, latestCount: 0 } });
+    return Promise.resolve().then(() => this.#storage.load('/notes') ?? createInitialNoteRecords());
   }
 
   async saveNote(source: Note, changes: Pick<Note, 'text' | 'editorNodes'>): Promise<{ errors: string[]; data?: never } | { errors?: never; data: NoteRecords }> {
