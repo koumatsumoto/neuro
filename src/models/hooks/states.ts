@@ -1,12 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { atom, useRecoilValue } from 'recoil';
-import { AppStorage } from './AppStorage';
-import { AppUseCases } from './AppUseCases';
-import { Query, UseCases } from './interfaces';
+import { AppUseCases, Query, UseCases } from '../usecases';
 
 const appUseCases = atom({
   key: 'atom/appUseCases',
-  default: new AppUseCases(new AppStorage({ version: 'v3' })),
+  default: new AppUseCases(),
 });
 
 export const useAppUseCases = () => {

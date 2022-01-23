@@ -1,4 +1,4 @@
-import { Note } from '../models';
+import { Note } from '../entities';
 
 export type NoteRecords = {
   all: Record<Note['id'], Note>;

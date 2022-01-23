@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import React from 'react';
-import { Note } from '../../models';
-import { useCommand, useQuery } from '../../services';
+import { Note, useCommand, useQuery } from '../../models';
 import { EditableNote } from './EditableNote';
 
 export const NoteListLayout: React.FC = ({ children }) => {

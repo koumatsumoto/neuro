@@ -1,5 +1,5 @@
 import { Descendant, Editor, Location, Node, Point, Transforms } from 'slate';
-import { Note } from '../../../models';
+import { Note } from '../../../models/entities';
 
 // for application service
 export type EditorOutputData = { text: string; editorNodes: Descendant[] };

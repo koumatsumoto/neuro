@@ -1,9 +1,9 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Editor } from 'slate';
-import { Note } from '../models';
-import { filterNullish } from '../utils';
-import { AppStorage, NoteRecords } from './AppStorage';
+import { filterNullish } from '../../utils';
+import { Note } from '../entities';
+import { AppStorage, NoteRecords } from '../services';
 import { UseCases } from './interfaces';
 
 export class AppUseCases implements UseCases {
@@ -11,7 +11,7 @@ export class AppUseCases implements UseCases {
   readonly #noteRecords = new BehaviorSubject<NoteRecords | null>(null);
   readonly #activeEditor = new BehaviorSubject<Editor | null>(null);
 
-  constructor(storage: AppStorage) {
+  constructor(storage: AppStorage = new AppStorage({ version: 'v3' })) {
     this.#storage = storage;
   }
 
