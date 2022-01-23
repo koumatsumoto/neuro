@@ -1,1 +1,1 @@
-export * from './AppStorage';
+export * from './AppRepository';

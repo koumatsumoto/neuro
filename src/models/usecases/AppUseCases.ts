@@ -3,16 +3,16 @@ import { map } from 'rxjs/operators';
 import { Editor } from 'slate';
 import { filterNullish } from '../../utils';
 import { Note } from '../entities';
-import { AppStorage, NoteRecords } from '../services';
+import { AppRepository, NoteRecords } from '../services';
 import { UseCases } from './interfaces';
 
 export class AppUseCases implements UseCases {
-  readonly #storage: AppStorage;
+  readonly #repository: AppRepository;
   readonly #noteRecords = new BehaviorSubject<NoteRecords | null>(null);
   readonly #activeEditor = new BehaviorSubject<Editor | null>(null);
 
-  constructor(storage: AppStorage = new AppStorage({ version: 'v3' })) {
-    this.#storage = storage;
+  constructor(repository: AppRepository = new AppRepository({ version: 'v3' })) {
+    this.#repository = repository;
   }
 
   get hasActiveEditor() {
@@ -52,11 +52,11 @@ export class AppUseCases implements UseCases {
   }
 
   #loadNotes() {
-    this.#noteRecords.next(this.#storage.loadNotes());
+    this.#noteRecords.next(this.#repository.loadNotes());
   }
 
   async #saveNote(source: Note, updates: Pick<Note, 'text' | 'editorNodes'>) {
-    await this.#storage.saveNote(source, updates).then(({ errors, data }) => {
+    await this.#repository.saveNote(source, updates).then(({ errors, data }) => {
       if (errors) {
         console.log('[AppUseCases/updateNote/errors]', { errors, source, updates });
       } else {
