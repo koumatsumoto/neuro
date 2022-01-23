@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import React from 'react';
-import { Note, useCommand, useQuery } from '../../models';
+import { Note, useAppUseCases, useQuery } from '../../models';
 import { EditableNote } from './EditableNote';
 
 export const NoteListLayout: React.FC = ({ children }) => {
@@ -24,17 +24,16 @@ export const NoteListLayout: React.FC = ({ children }) => {
 };
 
 export const NoteList = () => {
-  const loadedNotes = useQuery((usecases) => usecases.queryLatestNotesWithReloading(), []);
-  const saveNoteAndChangeEditorInactive = useCommand((usecases) => usecases.changeEditorInactiveAndSaveNote);
-  const changeEditorActive = useCommand((usecases) => usecases.changeEditorActive);
+  const usecases = useAppUseCases();
+  const loadedNotes = useQuery(usecases.queryLatestNotesWithReloading, []);
 
   const createEditableNote = (note: Note) => {
     return (
       <EditableNote
         key={note.uid}
         data={note}
-        onBlur={(data) => saveNoteAndChangeEditorInactive(note, { text: data.text, editorNodes: JSON.stringify(data.editorNodes) })}
-        onFocus={(editor) => changeEditorActive(editor)}
+        onBlur={(data) => usecases.changeEditorInactiveAndSaveNote(note, { text: data.text, editorNodes: JSON.stringify(data.editorNodes) })}
+        onFocus={(editor) => usecases.changeEditorActive(editor)}
       />
     );
   };

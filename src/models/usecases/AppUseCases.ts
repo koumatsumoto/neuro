@@ -19,7 +19,7 @@ export class AppUseCases implements UseCases {
     return this.#activeEditor.pipe(map(Boolean));
   }
 
-  queryLatestNotesWithReloading(): Observable<Note[]> {
+  queryLatestNotesWithReloading = (): Observable<Note[]> => {
     this.#loadNotes().catch();
 
     return this.#noteRecords.pipe(
@@ -28,7 +28,7 @@ export class AppUseCases implements UseCases {
       map(Note.orderByCreatedNewer),
       map((notes) => [Note.createNewOne(), ...notes]),
     );
-  }
+  };
 
   async changeEditorInactiveAndSaveNote(source: Note, updates: Pick<Note, 'text' | 'editorNodes'>) {
     this.#activeEditor.next(null);
