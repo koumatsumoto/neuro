@@ -15,9 +15,9 @@ export class AppUseCases implements UseCases {
     this.#repository = repository;
   }
 
-  get hasActiveEditor() {
+  hasActiveEditor = () => {
     return this.#activeEditor.pipe(map(Boolean));
-  }
+  };
 
   queryLatestNotesWithReloading = (): Observable<Note[]> => {
     this.#loadNotes().catch();
