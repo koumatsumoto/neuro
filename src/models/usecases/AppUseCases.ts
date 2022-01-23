@@ -51,8 +51,8 @@ export class AppUseCases implements UseCases {
     this.#activeEditor.getValue()?.customCommands.addSlash();
   }
 
-  #loadNotes() {
-    this.#noteRecords.next(this.#repository.loadNotes());
+  async #loadNotes() {
+    this.#noteRecords.next(await this.#repository.loadNotes());
   }
 
   async #saveNote(source: Note, updates: Pick<Note, 'text' | 'editorNodes'>) {

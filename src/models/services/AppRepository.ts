@@ -21,8 +21,8 @@ export class AppRepository {
     this.#storage = new StorageService(storageOptions);
   }
 
-  loadNotes(): NoteRecords {
-    return this.#storage.load('/notes') ?? { all: {}, latest: {}, stats: { allCount: 0, latestCount: 0 } };
+  async loadNotes(): Promise<NoteRecords> {
+    return Promise.resolve().then(() => this.#storage.load('/notes') ?? { all: {}, latest: {}, stats: { allCount: 0, latestCount: 0 } });
   }
 
   async saveNote(source: Note, changes: Pick<Note, 'text' | 'editorNodes'>): Promise<{ errors: string[]; data?: never } | { errors?: never; data: NoteRecords }> {
@@ -32,7 +32,7 @@ export class AppRepository {
       return { errors };
     }
 
-    const data = this.loadNotes();
+    const data = await this.loadNotes();
     data.all[source.id] = { ...source };
     delete data.latest[source.id];
     data.all[created.id] = created;
