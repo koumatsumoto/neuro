@@ -2,7 +2,6 @@ import { sort } from 'fp-ts/Array';
 import * as Ord from 'fp-ts/Ord';
 import * as Predicate from 'fp-ts/Predicate';
 import { pipe } from 'fp-ts/function';
-import * as N from 'fp-ts/number';
 import * as S from 'fp-ts/string';
 import { Crypto, getValidation } from '../../../utils';
 
@@ -57,9 +56,9 @@ const createChild = async (source: Note, updates: Pick<Note, 'text' | 'editorNod
 };
 
 const toText = (note: Note) => note.text;
-const toCreatedAt = (note: Note) => note.createdAt;
+const toAncestor = (note: Note) => note.ancestor;
 
-const byCreatedAtDesc = pipe(N.Ord, Ord.contramap(toCreatedAt), Ord.reverse);
+const byAncestor = pipe(S.Ord, Ord.contramap(toAncestor));
 
 const isChangedFrom =
   <T>(a: T) =>
@@ -79,6 +78,7 @@ export const getNoteValidation = (source: Note) => {
 export const Note = {
   createNewOne,
   createChild,
-  orderByCreatedNewer: sort(byCreatedAtDesc),
+  // @note 保存後にリストの順番が変更されないようにするため仮で使用
+  orderByAncestor: sort(byAncestor),
   validateUpdates: (beforeUpdate: Note, afterUpdate: Note) => getNoteValidation(beforeUpdate)(afterUpdate),
 } as const;

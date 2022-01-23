@@ -25,7 +25,7 @@ export class AppUseCases implements UseCases {
     return this.#noteRecords.pipe(
       filterNullish,
       map(({ latest }) => Object.values(latest)),
-      map(Note.orderByCreatedNewer),
+      map(Note.orderByAncestor),
       map((notes) => [Note.createNewOne(), ...notes]),
     );
   };
