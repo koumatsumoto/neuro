@@ -8,11 +8,12 @@ export const NoteMetadata = ({ data }: { data: Note }) => {
     <Box
       sx={{
         fontSize: '12px',
+        lineHeight: '10.4px',
+        letterSpacing: '-0.4px',
         display: 'flex',
         alignItems: 'end',
         justifyContent: 'start',
         padding: '16px 12px',
-        letterSpacing: '-0.4px',
       }}
     >
       @{Time.distanceToNow(data.createdAt)} #{data.uid.substring(data.uid.length - 6)} #parentCount:{data.parentCount}

@@ -114,6 +114,8 @@ export const EditableNote = ({
           padding: '12px 16px',
           '& *': {
             fontSize: '12px',
+            lineHeight: '10.4px',
+            letterSpacing: '-0.14px',
           },
         }}
       >
