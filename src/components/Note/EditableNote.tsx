@@ -7,12 +7,9 @@ import { defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-ma
 import { schema } from 'prosemirror-schema-basic';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import React, { useCallback } from 'react';
 import { ProseMirror, useProseMirror } from 'use-prosemirror';
 import { Note } from '../../models';
-import { noop } from '../../utils';
 import { NoteMetadata } from './Metadata';
 
 import 'prosemirror-view/style/prosemirror.css';
@@ -25,27 +22,25 @@ const myKeymap = keymap({
   },
 });
 
-export const EditableNote = ({ data, onChange = noop }: { data: Note; onChange?: (data: { text: string }) => void }) => {
-  const [state, setState] = useProseMirror({ schema, doc: defaultMarkdownParser.parse(data.text), plugins: [myKeymap] });
-  const viewRef = useRef<{ view: EditorView | null }>(null);
-  const [changeNotificator] = useState(new Subject<{ text: string }>());
-
-  useEffect(() => {
-    const subscription = changeNotificator.pipe(debounceTime(1000)).subscribe(onChange);
-
-    return () => subscription.unsubscribe();
-  }, [changeNotificator, onChange]);
+export const EditableNote = ({ data, onBlur }: { data: Note; onBlur?: (data: { text: string }) => void }) => {
+  const [state, setState] = useProseMirror({
+    schema,
+    doc: defaultMarkdownParser.parse(data.text),
+    plugins: [myKeymap],
+  });
 
   const handleChange = useCallback(
     (data: EditorState) => {
-      // console.log('[debug/onChange/state]', data);
-      // console.log('[debug/onChange/view]', viewRef.current?.view);
+      console.log('[debug/onChange/state]', data);
       setState(data);
-
-      changeNotificator.next({ text: defaultMarkdownSerializer.serialize(data.doc) });
     },
-    [setState, changeNotificator, viewRef],
+    [setState],
   );
+
+  const handleBlur = (view: EditorView) => {
+    onBlur?.({ text: defaultMarkdownSerializer.serialize(view.state.doc) });
+    return true;
+  };
 
   return (
     <Paper
@@ -67,7 +62,13 @@ export const EditableNote = ({ data, onChange = noop }: { data: Note; onChange?:
           },
         }}
       >
-        <ProseMirror ref={viewRef} state={state} onChange={handleChange} />
+        <ProseMirror
+          state={state}
+          onChange={handleChange}
+          handleDOMEvents={{
+            blur: handleBlur,
+          }}
+        />
       </Box>
     </Paper>
   );

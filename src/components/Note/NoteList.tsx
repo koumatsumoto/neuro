@@ -31,7 +31,7 @@ export const NoteList = () => {
   const [saveNoteAfterEdit] = useCommand(usecases.saveNoteAfterEdit);
 
   const createEditableNote = (note: Note) => {
-    return <EditableNote key={note.uid} data={note} onChange={(changes) => saveNoteAfterEdit(note, changes)} />;
+    return <EditableNote key={note.uid} data={note} onBlur={(changes) => saveNoteAfterEdit(note, changes)} />;
   };
 
   return <NoteListLayout>{loadedNotes.map(createEditableNote)}</NoteListLayout>;
