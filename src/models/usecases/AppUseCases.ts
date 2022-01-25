@@ -10,7 +10,7 @@ export class AppUseCases {
   readonly #noteRecords = new BehaviorSubject<NoteRecords | null>(null);
   readonly #activeEditor = new BehaviorSubject<Editor | null>(null);
 
-  constructor(repository: AppRepository = new AppRepository({ version: 'v3' })) {
+  constructor(repository: AppRepository = new AppRepository({ version: 'v4' })) {
     this.#repository = repository;
   }
 
@@ -29,23 +29,21 @@ export class AppUseCases {
     );
   };
 
-  changeEditorInactiveAndSaveNote = async (source: Note, updates: Pick<Note, 'text' | 'editorNodes'>) => {
-    this.#activeEditor.next(null);
+  saveNoteAfterEdit = async (source: Note, updates: Pick<Note, 'text'>) => {
     await this.#saveNote(source, updates);
   };
 
-  changeEditorActive = (editor: Editor) => {
-    this.#activeEditor.next(editor);
-  };
-
+  // TODO(feat): currently not working
   addHash() {
     this.#activeEditor.getValue()?.customCommands.addHash();
   }
 
+  // TODO(feat): currently not working
   addAt() {
     this.#activeEditor.getValue()?.customCommands.addAt();
   }
 
+  // TODO(feat): currently not working
   addSlash() {
     this.#activeEditor.getValue()?.customCommands.addSlash();
   }

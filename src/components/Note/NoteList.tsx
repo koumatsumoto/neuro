@@ -28,18 +28,10 @@ export const NoteListLayout: React.FC = ({ children }) => {
 export const NoteList = () => {
   const usecases = useAppUseCases();
   const loadedNotes = useQuery(usecases.queryLatestNotesWithReloading, []);
-  const [changeEditorInactiveAndSaveNote] = useCommand(usecases.changeEditorInactiveAndSaveNote);
-  const [changeEditorActive] = useCommand(usecases.changeEditorActive);
+  const [saveNoteAfterEdit] = useCommand(usecases.saveNoteAfterEdit);
 
   const createEditableNote = (note: Note) => {
-    return (
-      <EditableNote
-        key={note.uid}
-        data={note}
-        onBlur={(data) => changeEditorInactiveAndSaveNote(note, { text: data.text, editorNodes: JSON.stringify(data.editorNodes) })}
-        onFocus={changeEditorActive}
-      />
-    );
+    return <EditableNote key={note.uid} data={note} onChange={(changes) => saveNoteAfterEdit(note, changes)} />;
   };
 
   return <NoteListLayout>{loadedNotes.map(createEditableNote)}</NoteListLayout>;

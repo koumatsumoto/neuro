@@ -1,103 +1,51 @@
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
-import React, { useCallback, useRef, useState } from 'react';
-import { createEditor, Descendant, Editor, Text, Transforms } from 'slate';
-import { Editable, ReactEditor, RenderElementProps, RenderLeafProps, Slate, withReact } from 'slate-react';
+import { baseKeymap } from 'prosemirror-commands';
+import { keymap } from 'prosemirror-keymap';
+import { defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown';
+import { schema } from 'prosemirror-schema-basic';
+import { EditorState } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { ProseMirror, useProseMirror } from 'use-prosemirror';
 import { Note } from '../../models';
-import { debug, noop } from '../../utils';
+import { noop } from '../../utils';
 import { NoteMetadata } from './Metadata';
-import {
-  CodeBlockElement,
-  debugNodes,
-  disableControlKeyShortcuts,
-  disableTabKey,
-  EditorOutputData,
-  getInitialEditorValue,
-  Leaf,
-  makeEditorOutputData,
-  onCtrlAnd,
-  SimpleTextElement,
-  withCustomCommands,
-} from './internal';
 
-export const EditableNote = ({
-  data,
-  onFocus = noop,
-  onBlur = noop,
-  onChange = noop,
-}: {
-  data: Note;
-  onFocus?: (editor: Editor) => void;
-  onBlur?: (data: EditorOutputData) => void;
-  onChange?: (data: EditorOutputData) => void;
-}) => {
-  const editor = useRef(withCustomCommands(withReact(createEditor()))).current;
-  const [editorValue, setEditorValue] = useState<Descendant[]>(getInitialEditorValue(data));
+import 'prosemirror-view/style/prosemirror.css';
+
+const myKeymap = keymap({
+  ...baseKeymap,
+  'Mod-Space': (state, dispatch) => {
+    console.log('myKeymap', state);
+    return true;
+  },
+});
+
+export const EditableNote = ({ data, onChange = noop }: { data: Note; onChange?: (data: { text: string }) => void }) => {
+  const [state, setState] = useProseMirror({ schema, doc: defaultMarkdownParser.parse(data.text), plugins: [myKeymap] });
+  const viewRef = useRef<{ view: EditorView | null }>(null);
+  const [changeNotificator] = useState(new Subject<{ text: string }>());
+
+  useEffect(() => {
+    const subscription = changeNotificator.pipe(debounceTime(1000)).subscribe(onChange);
+
+    return () => subscription.unsubscribe();
+  }, [changeNotificator, onChange]);
 
   const handleChange = useCallback(
-    (value: Descendant[]) => {
-      setEditorValue(value);
-      onChange(makeEditorOutputData(value));
+    (data: EditorState) => {
+      // console.log('[debug/onChange/state]', data);
+      // console.log('[debug/onChange/view]', viewRef.current?.view);
+      setState(data);
+
+      changeNotificator.next({ text: defaultMarkdownSerializer.serialize(data.doc) });
     },
-    [setEditorValue, onChange],
+    [setState, changeNotificator, viewRef],
   );
-
-  debugNodes(editor);
-
-  const handleKeydown = useCallback(
-    (ev: React.KeyboardEvent) => {
-      disableTabKey(ev);
-      disableControlKeyShortcuts(ev);
-      onCtrlAnd('`', () => {
-        // Determine whether any of the currently selected blocks are code blocks.
-        const [match] = Editor.nodes(editor, { match: (n) => n.type === 'code' });
-        // Toggle the block type depending on whether there's already a match.
-        Transforms.setNodes(editor, { type: match ? 'paragraph' : 'code' }, { match: (n) => Editor.isBlock(editor, n) });
-      })(ev);
-      onCtrlAnd('b', () => {
-        const [match] = Editor.nodes(editor, { match: (n) => Text.isText(n) && n.bold === true });
-        Transforms.setNodes(
-          editor,
-          { bold: !match },
-          // Apply it to text nodes, and split the text node up if the
-          // selection is overlapping only part of it.
-          { match: (n) => Text.isText(n), split: true },
-        );
-      })(ev);
-    },
-    [editor],
-  );
-
-  const handleKeyup = useCallback((ev: React.KeyboardEvent) => {}, []);
-
-  const handleBlur = useCallback(() => {
-    setTimeout(() => {
-      // for EditorToolbar buttons operations
-      if (!ReactEditor.isFocused(editor)) {
-        onBlur(makeEditorOutputData(editor.children));
-      }
-    }, 300);
-  }, [editor, onBlur]);
-
-  const handleFocus = useCallback(() => {
-    onFocus(editor);
-  }, [editor, onFocus]);
-
-  const renderElement = useCallback((props: RenderElementProps) => {
-    switch (props.element.type) {
-      case 'code':
-        return CodeBlockElement(props);
-      default:
-        return SimpleTextElement(props);
-    }
-  }, []);
-
-  const renderLeaf = useCallback((props: RenderLeafProps) => {
-    debug('lenderLeaf', () => props);
-
-    return Leaf(props);
-  }, []);
 
   return (
     <Paper
@@ -119,9 +67,7 @@ export const EditableNote = ({
           },
         }}
       >
-        <Slate editor={editor} value={editorValue} onChange={handleChange}>
-          <Editable renderElement={renderElement} renderLeaf={renderLeaf} onKeyDown={handleKeydown} onKeyUp={handleKeyup} onBlur={handleBlur} onFocus={handleFocus} />
-        </Slate>
+        <ProseMirror ref={viewRef} state={state} onChange={handleChange} />
       </Box>
     </Paper>
   );
