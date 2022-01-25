@@ -2,7 +2,8 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import * as React from 'react';
-import { useAppUseCases, useQuery } from '../../models';
+import { useAppUseCases } from '../../hooks';
+import { useQuery } from '../../utils';
 import { EditorToolbar } from './EditorToolbar';
 import { SearchToolbar } from './SearchToolbar';
 

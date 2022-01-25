@@ -1,5 +1,5 @@
 import { atom, useRecoilValue } from 'recoil';
-import { AppUseCases } from '../usecases';
+import { AppUseCases } from '../models';
 
 const appUseCases = atom({
   key: 'atom/appUseCases',

@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { useAppUseCases } from '../../models';
+import { useAppUseCases } from '../../hooks';
 
 export const EditorToolbar = () => {
   const usecases = useAppUseCases();

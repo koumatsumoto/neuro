@@ -5,3 +5,4 @@ export * from './hooks';
 export * from './predicates';
 export * from './rx-operators';
 export * from './validation-fp';
+export * from './useUseCases';

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { atom, useRecoilValue } from 'recoil';
 import { Subject } from 'rxjs';
-import { isPromise } from '../../utils';
+import { isPromise } from '../predicates';
 import { UseCaseCommand } from './interfaces';
 import { useSubscribe } from './useSubscribe';
 
