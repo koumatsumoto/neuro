@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import { UseCaseQuery } from '../usecases';
+import { useMemo } from 'react';
+import { UseCaseQuery } from './interfaces';
+import { useSubscribe } from './useSubscribe';
 
 interface UseQuery {
   <T>(query: UseCaseQuery<T>, initialValue: undefined): T | undefined;
@@ -8,13 +9,7 @@ interface UseQuery {
 }
 
 export const useQuery: UseQuery = <T>(query: UseCaseQuery<T>, initialValue?: T) => {
-  const [value, setValue] = useState(initialValue);
+  const observable = useMemo(query, [query]);
 
-  useEffect(() => {
-    const subscription = query().subscribe((value) => setValue(value));
-
-    return () => subscription.unsubscribe();
-  }, [query]);
-
-  return value;
+  return useSubscribe(observable, initialValue);
 };

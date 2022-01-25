@@ -4,9 +4,8 @@ import { Editor } from 'slate';
 import { filterNullish } from '../../utils';
 import { Note } from '../entities';
 import { AppRepository, NoteRecords } from '../services';
-import { UseCases } from './interfaces';
 
-export class AppUseCases implements UseCases {
+export class AppUseCases {
   readonly #repository: AppRepository;
   readonly #noteRecords = new BehaviorSubject<NoteRecords | null>(null);
   readonly #activeEditor = new BehaviorSubject<Editor | null>(null);
@@ -30,14 +29,14 @@ export class AppUseCases implements UseCases {
     );
   };
 
-  async changeEditorInactiveAndSaveNote(source: Note, updates: Pick<Note, 'text' | 'editorNodes'>) {
+  changeEditorInactiveAndSaveNote = async (source: Note, updates: Pick<Note, 'text' | 'editorNodes'>) => {
     this.#activeEditor.next(null);
     await this.#saveNote(source, updates);
-  }
+  };
 
-  async changeEditorActive(editor: Editor) {
+  changeEditorActive = (editor: Editor) => {
     this.#activeEditor.next(editor);
-  }
+  };
 
   addHash() {
     this.#activeEditor.getValue()?.customCommands.addHash();
@@ -58,7 +57,7 @@ export class AppUseCases implements UseCases {
   async #saveNote(source: Note, updates: Pick<Note, 'text' | 'editorNodes'>) {
     await this.#repository.saveNote(source, updates).then(({ errors, data }) => {
       if (errors) {
-        console.log('[AppUseCases/updateNote/errors]', { errors, source, updates });
+        throw errors;
       } else {
         this.#noteRecords.next(data!);
       }
