@@ -12,8 +12,6 @@ import { ProseMirror, useProseMirror } from 'use-prosemirror';
 import { Note } from '../../models';
 import { NoteMetadata } from './Metadata';
 
-import 'prosemirror-view/style/prosemirror.css';
-
 const myKeymap = keymap({
   ...baseKeymap,
   'Mod-Space': (state, dispatch) => {
@@ -59,6 +57,9 @@ export const EditableNote = ({ data, onBlur }: { data: Note; onBlur?: (data: { t
             fontSize: '12px',
             lineHeight: '10.4px',
             letterSpacing: '-0.14px',
+          },
+          '& :focus-visible': {
+            outline: 0,
           },
         }}
       >
