@@ -1,16 +1,16 @@
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { useAppUseCases } from '../../hooks';
 
 export const EditorToolbar = () => {
-  const usecases = useAppUseCases();
+  // TODO(feat): implement editor toolbar
+  const noop = () => {};
 
   return (
     <>
       <ButtonGroup variant="contained" size="small" aria-label="outlined button group">
-        <Button onClick={() => usecases.addHash()}>#</Button>
-        <Button onClick={() => usecases.addAt()}>@</Button>
-        <Button onClick={() => usecases.addSlash()}>/</Button>
+        <Button onClick={noop}>#</Button>
+        <Button onClick={noop}>@</Button>
+        <Button onClick={noop}>/</Button>
       </ButtonGroup>
     </>
   );
