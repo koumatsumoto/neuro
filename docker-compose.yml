@@ -1,0 +1,13 @@
+version: '3'
+services:
+  neuro-neo4j:
+    container_name: neuro-neo4j
+    image: neo4j
+    network_mode: bridge
+    ports:
+      - '127.0.0.1:7474:7474'
+      - '127.0.0.1:7687:7687'
+    environment:
+      - NEO4J_AUTH=none
+volumes:
+  neuro-neo4j-data: {}

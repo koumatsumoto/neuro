@@ -15,6 +15,10 @@ Install node_modules
 npm install --engine-strict
 ```
 
+Install docker and docker-compose
+
+- TODO(docs)
+
 ## Available Scripts
 
 In the project directory, you can run:
