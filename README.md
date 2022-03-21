@@ -1,6 +1,19 @@
-# Getting Started with Create React App
+# Getting Started
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Setup Develop Environment
+
+Install Node.js v16 and npm v8
+
+```sh
+node -v # v16.14.0
+npm -v  # 8.5.3
+```
+
+Install node_modules
+
+```sh
+npm install --engine-strict
+```
 
 ## Available Scripts
 
